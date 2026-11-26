@@ -67,10 +67,10 @@ Implementación de `POST /habilitados` siguiendo TDD (criterio E4 del diseño): 
     - **Validates: Requirements 1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 3.1, 3.2, 3.3**
 
 - [ ] 4. Implementar y verificar gate SCA
-  - [ ] 4.1 Añadir el paso SCA en `.github/workflows/ci.yml`
+  - [X] 4.1 Añadir el paso SCA en `.github/workflows/ci.yml`
     - `npm audit --audit-level=high` tras `npm ci`, en `pull_request` y `push` a `main`
     - **Validates: Requirements 4.2**
-  - [ ] 4.2 Generar la evidencia del gate
+  - [X] 4.2 Generar la evidencia del gate
     - Introducir (o mantener) la dependencia vulnerable HIGH (lodash 4.17.20), capturar el run fallido del pipeline
     - Corregir la dependencia (bump o `npm audit fix` si hay parche) y capturar el run corregido
     - **Validates: Requirements 4.2**
