@@ -7,7 +7,7 @@ Implementación de `POST /habilitados` siguiendo TDD (criterio E4 del diseño): 
 ## Tasks
 
 - [ ] 1. Crear tests iniciales y verificar que fallen
-  - [ ] 1.1 Escribir tests de criterios funcionales 1.x
+  - [x] 1.1 Escribir tests de criterios funcionales 1.x
     - En `tests/habilitados.test.js` (supertest sobre `src/app.js`) y `tests/habilitados-calculo.test.js` (funciones puras)
     - 1.1: solicitud válida → 200 con solo cursos no aprobados con prerrequisitos satisfechos
     - 1.2: cursos sin prerrequisitos no aprobados incluidos
