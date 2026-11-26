@@ -80,3 +80,62 @@ describe('GET /cursos', () => {
     });
   });
 });
+
+describe('GET /cursos/:codigo', () => {
+  // Req 2.1 — código existente devuelve 200 con detalle completo
+  describe('2.1 código existente', () => {
+    test('responde 200 con todos los campos del curso', async () => {
+      const res = await request(app).get('/cursos/1INF30');
+
+      expect(res.status).toBe(200);
+      expect(res.body).toMatchObject({
+        id: '1INF30',
+        name: expect.any(String),
+        credits: expect.any(Number),
+        type: expect.stringMatching(/^(obligatorio|electivo)$/),
+        prerequisites: expect.any(Array),
+      });
+      // cycle puede ser número o null
+      expect(res.body.cycle === null || typeof res.body.cycle === 'number').toBe(true);
+    });
+
+    test('cada prerequisito tiene id y name (string)', async () => {
+      // 1CON27 tiene al menos un requisito según los datos
+      const res = await request(app).get('/cursos/1CON27');
+
+      expect(res.status).toBe(200);
+      expect(res.body.prerequisites.length).toBeGreaterThan(0);
+      for (const pre of res.body.prerequisites) {
+        expect(pre).toMatchObject({
+          id: expect.any(String),
+          name: expect.any(String),
+        });
+      }
+    });
+
+    test('curso sin prerequisitos devuelve prerequisites como arreglo vacío', async () => {
+      // 1GES92 no tiene requisitos
+      const res = await request(app).get('/cursos/1GES92');
+
+      expect(res.status).toBe(200);
+      expect(res.body.prerequisites).toEqual([]);
+    });
+  });
+
+  // Req 2.2 — código inexistente → 404
+  describe('2.2 código inexistente', () => {
+    test('responde 404 con mensaje de error', async () => {
+      const res = await request(app).get('/cursos/NOEXISTE');
+
+      expect(res.status).toBe(404);
+      expect(res.body).toEqual({ error: 'curso no encontrado' });
+    });
+
+    test('código vacío-string no encontrado devuelve 404', async () => {
+      const res = await request(app).get('/cursos/XXXXXXXX');
+
+      expect(res.status).toBe(404);
+      expect(res.body).toEqual({ error: 'curso no encontrado' });
+    });
+  });
+});

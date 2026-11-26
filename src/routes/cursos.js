@@ -18,4 +18,29 @@ router.get('/', (req, res) => {
   return res.json(repositorio.listar());
 });
 
+// GET /cursos/:codigo
+router.get('/:codigo', (req, res) => {
+  const { codigo } = req.params;
+  const curso = repositorio.obtener(codigo);
+
+  if (!curso) {
+    return res.status(404).json({ error: 'curso no encontrado' });
+  }
+
+  // Resolve each prerequisite id to { id, name }
+  const prerequisites = (curso.prerequisites || []).map((preId) => {
+    const pre = repositorio.obtener(preId);
+    return pre ? { id: pre.id, name: pre.name } : { id: preId, name: null };
+  });
+
+  return res.json({
+    id: curso.id,
+    name: curso.name,
+    credits: curso.credits,
+    cycle: curso.cycle,
+    type: curso.type,
+    prerequisites,
+  });
+});
+
 module.exports = router;
