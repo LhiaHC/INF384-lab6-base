@@ -110,6 +110,18 @@
         "chatSessionId": "sess_f967b3dc-eb5b-4eaf-99c0-152a6142bba2",
         "timestamp": 1795731626190
       }
+    ],
+    "3.2 Montar el router en `src/app.js`": [
+      {
+        "executionId": "897b98c6-145d-4f9f-9c05-ab221b42ae60",
+        "chatSessionId": "sess_2b553c41-9ac0-48ef-b4e6-9f8f823047b1",
+        "timestamp": 1795731686565
+      },
+      {
+        "executionId": "897b98c6-145d-4f9f-9c05-ab221b42ae60",
+        "chatSessionId": "sess_2b553c41-9ac0-48ef-b4e6-9f8f823047b1",
+        "timestamp": 1795731717847
+      }
     ]
   }
 }

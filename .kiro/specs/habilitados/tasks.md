@@ -58,7 +58,7 @@ Implementación de `POST /habilitados` siguiendo TDD (criterio E4 del diseño): 
   - [x] 3.1 Crear el router `src/routes/habilitados.js`
     - Definir `POST /habilitados`: parsear el cuerpo, invocar validación y cálculo, traducir el resultado a 200 con la lista de cursos o 400 con `{"error": "<mensaje>"}`
     - **Validates: Requirements 1.1, 2.1, 2.8**
-  - [ ] 3.2 Montar el router en `src/app.js`
+  - [x] 3.2 Montar el router en `src/app.js`
     - Registrar el router en `/habilitados`
     - **Validates: Requirements 1.1, 1.3**
   - [ ] 3.3 Verificar la suite completa
