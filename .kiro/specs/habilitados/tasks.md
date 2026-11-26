@@ -82,7 +82,7 @@ Implementación de `POST /habilitados` siguiendo TDD (criterio E4 del diseño): 
   - [X] 5.1 Añadir la acción Gitleaks en `.github/workflows/ci.yml`
     - `actions/checkout@v4` con `fetch-depth: 0` + `gitleaks/gitleaks-action@v3` con `GITHUB_TOKEN` y `GITLEAKS_ENABLE_COMMENTS: "false"`, en `pull_request` y `push` a `main`, en paralelo con las pruebas
     - **Validates: Requirements 4.3**
-  - [ ] 5.2 Generar la evidencia del gate
+  - [X] 5.2 Generar la evidencia del gate
     - Introducir un secreto claramente falso (API key de prueba) en un commit del PR, capturar el run fallido
     - Retirar el secreto y capturar el run corregido
     - **Validates: Requirements 4.3**
