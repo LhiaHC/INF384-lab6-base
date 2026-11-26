@@ -79,6 +79,25 @@
         "chatSessionId": "sess_e0b08bd2-0b64-40a2-b297-293965176e96",
         "timestamp": 1795731489224
       }
+    ],
+    "2.3 Verificar que los tests de función pura pasan": [
+      {
+        "executionId": "e6ab8afe-0eb3-42c0-b781-023a96315e88",
+        "chatSessionId": "sess_13e27a3f-bfec-49a1-b249-6d5ad391a10d",
+        "timestamp": 1795731524166
+      },
+      {
+        "executionId": "e6ab8afe-0eb3-42c0-b781-023a96315e88",
+        "chatSessionId": "sess_13e27a3f-bfec-49a1-b249-6d5ad391a10d",
+        "timestamp": 1795731557219
+      }
+    ],
+    "2. Implementar validaciones y cálculo de habilitados": [
+      {
+        "executionId": "e6ab8afe-0eb3-42c0-b781-023a96315e88",
+        "chatSessionId": "sess_13e27a3f-bfec-49a1-b249-6d5ad391a10d",
+        "timestamp": 1795731557298
+      }
     ]
   }
 }

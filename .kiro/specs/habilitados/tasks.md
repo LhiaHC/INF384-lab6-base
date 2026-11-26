@@ -38,7 +38,7 @@ Implementación de `POST /habilitados` siguiendo TDD (criterio E4 del diseño): 
     - Guardar la salida fallida como evidencia del estado inicial (E4 / TDD)
     - **Validates: Requirements 1.1, 2.1, 3.1**
 
-- [ ] 2. Implementar validaciones y cálculo de habilitados
+- [x] 2. Implementar validaciones y cálculo de habilitados
   - [x] 2.1 Implementar la validación del payload
     - Crear `src/data/cursos-habilitados.js` (o `src/util/validar-aprobados.js`) con funciones puras sin acceso a `req`/`res`
     - Orden de validación: presencia del campo → tipo arreglo → límite de 100 elementos sobre el arreglo original (antes de deduplicar) → formato alfanumérico `^[A-Za-z0-9]+$` → existencia contra el Repositorio
@@ -49,7 +49,7 @@ Implementación de `POST /habilitados` siguiendo TDD (criterio E4 del diseño): 
     - Ordenar por `id` ascendente y proyectar `id`, `name`, `credits`, `cycle`, `type` (sin `prerequisites`)
     - Leer el catálogo exclusivamente vía `src/data/repositorio.js`
     - **Validates: Requirements 1.1, 1.2, 1.4, 2.6**
-  - [ ] 2.3 Verificar que los tests de función pura pasan
+  - [x] 2.3 Verificar que los tests de función pura pasan
     - Correr los tests de `tests/habilitados-calculo.test.js`; deben pasar
     - Los tests de ruta siguen fallando (404) porque la ruta no existe todavía
     - **Validates: Requirements 1.1, 1.2, 2.6, 2.7**
