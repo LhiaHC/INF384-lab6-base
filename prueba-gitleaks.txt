@@ -1,0 +1,1 @@
+Prueba de Gitleaks completada sin credenciales.
