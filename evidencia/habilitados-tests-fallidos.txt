@@ -1,0 +1,1406 @@
+========================================================================
+EVIDENCIA TDD - ESTADO ROJO INICIAL (E4)
+Tarea 1.4 — tests/habilitados.test.js + tests/habilitados-calculo.test.js
+Fecha: 2026-11-26T22:14:07.601Z
+Comando: npx jest tests/habilitados.test.js tests/habilitados-calculo.test.js --runInBand
+Estado esperado: FALLO — ruta POST /habilitados no existe; modulo cursos-habilitados.js no existe
+Valida requisitos: 1.1, 2.1, 3.1
+========================================================================
+FAIL tests/habilitados.test.js
+  ● POST /habilitados — criterios funcionales 1.x › 1.1 cálculo de habilitados › responde 200 con un arreglo de cursos
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      26 |         .send({ aprobados: ['1INF25', '1INF27', '1INF49'] });
+      27 |
+    > 28 |       expect(res.status).toBe(200);
+         |                          ^
+      29 |       expect(Array.isArray(res.body)).toBe(true);
+      30 |     });
+      31 |
+
+      at Object.toBe (tests/habilitados.test.js:28:26)
+
+  ● POST /habilitados — criterios funcionales 1.x › 1.1 cálculo de habilitados › solo incluye cursos no aprobados cuyos prerrequisitos están todos en aprobados
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      36 |         .send({ aprobados });
+      37 |
+    > 38 |       expect(res.status).toBe(200);
+         |                          ^
+      39 |
+      40 |       const catalogo = repositorio.listar();
+      41 |       const setAprobados = new Set(aprobados);
+
+      at Object.toBe (tests/habilitados.test.js:38:26)
+
+  ● POST /habilitados — criterios funcionales 1.x › 1.1 cálculo de habilitados › cada curso incluye id, name, credits, cycle y type, sin prerequisites
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      69 |         .send({ aprobados: ['1INF25'] });
+      70 |
+    > 71 |       expect(res.status).toBe(200);
+         |                          ^
+      72 |       expect(res.body.length).toBeGreaterThan(0);
+      73 |
+      74 |       for (const curso of res.body) {
+
+      at Object.toBe (tests/habilitados.test.js:71:26)
+
+  ● POST /habilitados — criterios funcionales 1.x › 1.1 cálculo de habilitados › la respuesta está ordenada por id ascendente
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      90 |         .send({ aprobados: ['1INF25', '1INF27', '1INF49'] });
+      91 |
+    > 92 |       expect(res.status).toBe(200);
+         |                          ^
+      93 |       const lista = ids(res);
+      94 |       const ordenada = [...lista].sort((a, b) => a.localeCompare(b));
+      95 |       expect(lista).toEqual(ordenada);
+
+      at Object.toBe (tests/habilitados.test.js:92:26)
+
+  ● POST /habilitados — criterios funcionales 1.x › 1.2 cursos sin prerrequisitos › incluye 1GES92 (sin prerrequisitos) cuando no está en aprobados
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      104 |         .send({ aprobados: ['1INF25'] });
+      105 |
+    > 106 |       expect(res.status).toBe(200);
+          |                          ^
+      107 |       expect(ids(res)).toContain('1GES92');
+      108 |     });
+      109 |
+
+      at Object.toBe (tests/habilitados.test.js:106:26)
+
+  ● POST /habilitados — criterios funcionales 1.x › 1.2 cursos sin prerrequisitos › con [] devuelve todos los cursos sin prerrequisitos (26)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      113 |         .send({ aprobados: [] });
+      114 |
+    > 115 |       expect(res.status).toBe(200);
+          |                          ^
+      116 |       const sinPrerrequisitos = repositorio
+      117 |         .listar()
+      118 |         .filter(
+
+      at Object.toBe (tests/habilitados.test.js:115:26)
+
+  ● POST /habilitados — criterios funcionales 1.x › 1.3 ejemplo del enunciado › {"aprobados": ["1INF25", "1INF27", "1INF49"]} devuelve exactamente 27 cursos
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      133 |         .send({ aprobados: ['1INF25', '1INF27', '1INF49'] });
+      134 |
+    > 135 |       expect(res.status).toBe(200);
+          |                          ^
+      136 |       expect(res.body).toHaveLength(27);
+      137 |     });
+      138 |
+
+      at Object.toBe (tests/habilitados.test.js:135:26)
+
+  ● POST /habilitados — criterios funcionales 1.x › 1.3 ejemplo del enunciado › incluye 1INF29, 1INF30, 1INF31 y 1INF32
+
+    TypeError: res.body.map is not a function
+
+      15 |
+      16 | function ids(res) {
+    > 17 |   return res.body.map((curso) => curso.id);
+         |                   ^
+      18 | }
+      19 |
+      20 | describe('POST /habilitados — criterios funcionales 1.x', () => {
+
+      at map (tests/habilitados.test.js:17:19)
+      at Object.ids (tests/habilitados.test.js:144:21)
+
+  ● POST /habilitados — criterios funcionales 1.x › 1.4 uso del repositorio sin efectos sobre los datos › data/cursos.json no cambia (hash idéntico antes y después)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      159 |         .send({ aprobados: ['1INF25', '1INF27', '1INF49'] });
+      160 |
+    > 161 |       expect(res.status).toBe(200);
+          |                          ^
+      162 |       expect(hashCursosJson()).toBe(hashAntes);
+      163 |     });
+      164 |
+
+      at Object.toBe (tests/habilitados.test.js:161:26)
+
+  ● POST /habilitados — criterios funcionales 1.x › 1.4 uso del repositorio sin efectos sobre los datos › el cálculo pasa por repositorio.listar()
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      170 |         .send({ aprobados: ['1INF25'] });
+      171 |
+    > 172 |       expect(res.status).toBe(200);
+          |                          ^
+      173 |       expect(espia).toHaveBeenCalled();
+      174 |       espia.mockRestore();
+      175 |     });
+
+      at Object.toBe (tests/habilitados.test.js:172:26)
+
+  ● POST /habilitados — criterios funcionales 1.x › 1.4 uso del repositorio sin efectos sobre los datos › data/cursos.json también queda intacto ante solicitud vacía
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      182 |         .send({ aprobados: [] });
+      183 |
+    > 184 |       expect(res.status).toBe(200);
+          |                          ^
+      185 |       expect(hashCursosJson()).toBe(hashAntes);
+      186 |     });
+      187 |   });
+
+      at Object.toBe (tests/habilitados.test.js:184:26)
+
+  ● POST /habilitados — validación de entrada (2.x) › 2.1 aprobados no es un arreglo › cadena de texto en lugar de arreglo → 400
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      216 |         .send({ aprobados: '1INF25' });
+      217 |
+    > 218 |       expect(res.status).toBe(400);
+          |                          ^
+      219 |       expect(res.body).toEqual({ error: "'aprobados' debe ser un arreglo de cadenas" });
+      220 |     });
+      221 |
+
+      at Object.toBe (tests/habilitados.test.js:218:26)
+
+  ● POST /habilitados — validación de entrada (2.x) › 2.1 aprobados no es un arreglo › número en lugar de arreglo → 400
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      225 |         .send({ aprobados: 123 });
+      226 |
+    > 227 |       expect(res.status).toBe(400);
+          |                          ^
+      228 |       expect(res.body).toEqual({ error: "'aprobados' debe ser un arreglo de cadenas" });
+      229 |     });
+      230 |   });
+
+      at Object.toBe (tests/habilitados.test.js:227:26)
+
+  ● POST /habilitados — validación de entrada (2.x) › 2.2 elementos deben ser cadenas › arreglo con un número [123] → 400
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      237 |         .send({ aprobados: [123] });
+      238 |
+    > 239 |       expect(res.status).toBe(400);
+          |                          ^
+      240 |       expect(res.body).toEqual({ error: "'aprobados' debe ser un arreglo de cadenas" });
+      241 |     });
+      242 |
+
+      at Object.toBe (tests/habilitados.test.js:239:26)
+
+  ● POST /habilitados — validación de entrada (2.x) › 2.2 elementos deben ser cadenas › arreglo con un objeto → 400
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      246 |         .send({ aprobados: [{ id: '1INF25' }] });
+      247 |
+    > 248 |       expect(res.status).toBe(400);
+          |                          ^
+      249 |       expect(res.body).toEqual({ error: "'aprobados' debe ser un arreglo de cadenas" });
+      250 |     });
+      251 |   });
+
+      at Object.toBe (tests/habilitados.test.js:248:26)
+
+  ● POST /habilitados — validación de entrada (2.x) › 2.3 límite de 100 elementos › 5000 copias duplicadas de un mismo código → 400 (antes de deduplicar)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      260 |         .send({ aprobados: payload });
+      261 |
+    > 262 |       expect(res.status).toBe(400);
+          |                          ^
+      263 |       expect(res.body).toEqual({ error: "'aprobados' admite como máximo 100 elementos" });
+      264 |     });
+      265 |
+
+      at Object.toBe (tests/habilitados.test.js:262:26)
+
+  ● POST /habilitados — validación de entrada (2.x) › 2.3 límite de 100 elementos › 101 códigos válidos distintos → 400
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      277 |         .send({ aprobados: payload });
+      278 |
+    > 279 |       expect(res2.status).toBe(400);
+          |                           ^
+      280 |       expect(res2.body).toEqual({ error: "'aprobados' admite como máximo 100 elementos" });
+      281 |     });
+      282 |   });
+
+      at Object.toBe (tests/habilitados.test.js:279:27)
+
+  ● POST /habilitados — validación de entrada (2.x) › 2.4 formato de código › "1INF30<script>" → 400 sin reflejar el payload
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      289 |         .send({ aprobados: ['1INF30<script>'] });
+      290 |
+    > 291 |       expect(res.status).toBe(400);
+          |                          ^
+      292 |       expect(res.body).toEqual({ error: 'formato de código inválido' });
+      293 |
+      294 |       const texto = JSON.stringify(res.body);
+
+      at Object.toBe (tests/habilitados.test.js:291:26)
+
+  ● POST /habilitados — validación de entrada (2.x) › 2.4 formato de código › código con espacios "1INF 30" → 400
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      303 |         .send({ aprobados: ['1INF 30'] });
+      304 |
+    > 305 |       expect(res.status).toBe(400);
+          |                          ^
+      306 |       expect(res.body).toEqual({ error: 'formato de código inválido' });
+      307 |     });
+      308 |
+
+      at Object.toBe (tests/habilitados.test.js:305:26)
+
+  ● POST /habilitados — validación de entrada (2.x) › 2.4 formato de código › código con inyección "1INF30 OR 1=1--" → 400
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      312 |         .send({ aprobados: ['1INF30 OR 1=1--'] });
+      313 |
+    > 314 |       expect(res.status).toBe(400);
+          |                          ^
+      315 |       expect(res.body).toEqual({ error: 'formato de código inválido' });
+      316 |     });
+      317 |   });
+
+      at Object.toBe (tests/habilitados.test.js:314:26)
+
+  ● POST /habilitados — validación de entrada (2.x) › 2.5 campo aprobados ausente › cuerpo {} → 400
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      324 |         .send({});
+      325 |
+    > 326 |       expect(res.status).toBe(400);
+          |                          ^
+      327 |       expect(res.body).toEqual({ error: "el campo 'aprobados' es obligatorio" });
+      328 |     });
+      329 |
+
+      at Object.toBe (tests/habilitados.test.js:326:26)
+
+  ● POST /habilitados — validación de entrada (2.x) › 2.5 campo aprobados ausente › cuerpo con otro campo → 400
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      333 |         .send({ cursos: [] });
+      334 |
+    > 335 |       expect(res.status).toBe(400);
+          |                          ^
+      336 |       expect(res.body).toEqual({ error: "el campo 'aprobados' es obligatorio" });
+      337 |     });
+      338 |   });
+
+      at Object.toBe (tests/habilitados.test.js:335:26)
+
+  ● POST /habilitados — validación de entrada (2.x) › 2.6 arreglo vacío › [] → 200 con todos los cursos sin prerrequisitos
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      345 |         .send({ aprobados: [] });
+      346 |
+    > 347 |       expect(res.status).toBe(200);
+          |                          ^
+      348 |       const sinPrerrequisitos = repositorio
+      349 |         .listar()
+      350 |         .filter((c) => !c.prerequisites || c.prerequisites.length === 0)
+
+      at Object.toBe (tests/habilitados.test.js:347:26)
+
+  ● POST /habilitados — validación de entrada (2.x) › 2.7 deduplicación tras el límite › 100 elementos exactos con duplicados → 200
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      366 |         .send({ aprobados: arreglo });
+      367 |
+    > 368 |       expect(res.status).toBe(200);
+          |                          ^
+      369 |       expect(Array.isArray(res.body)).toBe(true);
+      370 |       expect(res.body.length).toBeGreaterThan(0);
+      371 |     });
+
+      at Object.toBe (tests/habilitados.test.js:368:26)
+
+  ● POST /habilitados — validación de entrada (2.x) › 2.7 deduplicación tras el límite › 100 duplicados de un mismo código → 200 (equivalente a [ese código])
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      376 |         .send({ aprobados: new Array(100).fill('1INF25') });
+      377 |
+    > 378 |       expect(res.status).toBe(200);
+          |                          ^
+      379 |
+      380 |       const resUnico = await request(app)
+      381 |         .post('/habilitados')
+
+      at Object.toBe (tests/habilitados.test.js:378:26)
+
+  ● POST /habilitados — validación de entrada (2.x) › 2.8 código inexistente › 1INF99 → 400 con mensaje exacto
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      393 |         .send({ aprobados: ['1INF25', '1INF99'] });
+      394 |
+    > 395 |       expect(res.status).toBe(400);
+          |                          ^
+      396 |       expect(res.body).toEqual({ error: 'código de curso inexistente: 1INF99' });
+      397 |     });
+      398 |
+
+      at Object.toBe (tests/habilitados.test.js:395:26)
+
+  ● POST /habilitados — validación de entrada (2.x) › 2.8 código inexistente › código inexistente entre códigos válidos → 400 con mensaje exacto
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      402 |         .send({ aprobados: ['1INF25', '1INF27', '1XYZ00'] });
+      403 |
+    > 404 |       expect(res.status).toBe(400);
+          |                          ^
+      405 |       expect(res.body).toEqual({ error: 'código de curso inexistente: 1XYZ00' });
+      406 |     });
+      407 |   });
+
+      at Object.toBe (tests/habilitados.test.js:404:26)
+
+  ● Propiedades (2.x) › Property 2: idempotencia respecto de duplicados › iteración 1: resultado idéntico con el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      440 |           .send({ aprobados: [...new Set(conDuplicados)] });
+      441 |
+    > 442 |         expect(resOriginal.status).toBe(200);
+          |                                    ^
+      443 |         expect(resDedup.status).toBe(200);
+      444 |         expect(resOriginal.body).toEqual(resDedup.body);
+      445 |       });
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ● Propiedades (2.x) › Property 2: idempotencia respecto de duplicados › iteración 2: resultado idéntico con el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      440 |           .send({ aprobados: [...new Set(conDuplicados)] });
+      441 |
+    > 442 |         expect(resOriginal.status).toBe(200);
+          |                                    ^
+      443 |         expect(resDedup.status).toBe(200);
+      444 |         expect(resOriginal.body).toEqual(resDedup.body);
+      445 |       });
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ● Propiedades (2.x) › Property 2: idempotencia respecto de duplicados › iteración 3: resultado idéntico con el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      440 |           .send({ aprobados: [...new Set(conDuplicados)] });
+      441 |
+    > 442 |         expect(resOriginal.status).toBe(200);
+          |                                    ^
+      443 |         expect(resDedup.status).toBe(200);
+      444 |         expect(resOriginal.body).toEqual(resDedup.body);
+      445 |       });
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ● Propiedades (2.x) › Property 2: idempotencia respecto de duplicados › iteración 4: resultado idéntico con el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      440 |           .send({ aprobados: [...new Set(conDuplicados)] });
+      441 |
+    > 442 |         expect(resOriginal.status).toBe(200);
+          |                                    ^
+      443 |         expect(resDedup.status).toBe(200);
+      444 |         expect(resOriginal.body).toEqual(resDedup.body);
+      445 |       });
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ● Propiedades (2.x) › Property 2: idempotencia respecto de duplicados › iteración 5: resultado idéntico con el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      440 |           .send({ aprobados: [...new Set(conDuplicados)] });
+      441 |
+    > 442 |         expect(resOriginal.status).toBe(200);
+          |                                    ^
+      443 |         expect(resDedup.status).toBe(200);
+      444 |         expect(resOriginal.body).toEqual(resDedup.body);
+      445 |       });
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ● Propiedades (2.x) › Property 2: idempotencia respecto de duplicados › iteración 6: resultado idéntico con el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      440 |           .send({ aprobados: [...new Set(conDuplicados)] });
+      441 |
+    > 442 |         expect(resOriginal.status).toBe(200);
+          |                                    ^
+      443 |         expect(resDedup.status).toBe(200);
+      444 |         expect(resOriginal.body).toEqual(resDedup.body);
+      445 |       });
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ● Propiedades (2.x) › Property 2: idempotencia respecto de duplicados › iteración 7: resultado idéntico con el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      440 |           .send({ aprobados: [...new Set(conDuplicados)] });
+      441 |
+    > 442 |         expect(resOriginal.status).toBe(200);
+          |                                    ^
+      443 |         expect(resDedup.status).toBe(200);
+      444 |         expect(resOriginal.body).toEqual(resDedup.body);
+      445 |       });
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ● Propiedades (2.x) › Property 2: idempotencia respecto de duplicados › iteración 8: resultado idéntico con el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      440 |           .send({ aprobados: [...new Set(conDuplicados)] });
+      441 |
+    > 442 |         expect(resOriginal.status).toBe(200);
+          |                                    ^
+      443 |         expect(resDedup.status).toBe(200);
+      444 |         expect(resOriginal.body).toEqual(resDedup.body);
+      445 |       });
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ● Propiedades (2.x) › Property 2: idempotencia respecto de duplicados › iteración 9: resultado idéntico con el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      440 |           .send({ aprobados: [...new Set(conDuplicados)] });
+      441 |
+    > 442 |         expect(resOriginal.status).toBe(200);
+          |                                    ^
+      443 |         expect(resDedup.status).toBe(200);
+      444 |         expect(resOriginal.body).toEqual(resDedup.body);
+      445 |       });
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ● Propiedades (2.x) › Property 2: idempotencia respecto de duplicados › iteración 10: resultado idéntico con el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      440 |           .send({ aprobados: [...new Set(conDuplicados)] });
+      441 |
+    > 442 |         expect(resOriginal.status).toBe(200);
+          |                                    ^
+      443 |         expect(resDedup.status).toBe(200);
+      444 |         expect(resOriginal.body).toEqual(resDedup.body);
+      445 |       });
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ● Propiedades (2.x) › Property 2: idempotencia respecto de duplicados › iteración 11: resultado idéntico con el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      440 |           .send({ aprobados: [...new Set(conDuplicados)] });
+      441 |
+    > 442 |         expect(resOriginal.status).toBe(200);
+          |                                    ^
+      443 |         expect(resDedup.status).toBe(200);
+      444 |         expect(resOriginal.body).toEqual(resDedup.body);
+      445 |       });
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ● Propiedades (2.x) › Property 2: idempotencia respecto de duplicados › iteración 12: resultado idéntico con el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      440 |           .send({ aprobados: [...new Set(conDuplicados)] });
+      441 |
+    > 442 |         expect(resOriginal.status).toBe(200);
+          |                                    ^
+      443 |         expect(resDedup.status).toBe(200);
+      444 |         expect(resOriginal.body).toEqual(resDedup.body);
+      445 |       });
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ● Propiedades (2.x) › Property 2: idempotencia respecto de duplicados › iteración 13: resultado idéntico con el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      440 |           .send({ aprobados: [...new Set(conDuplicados)] });
+      441 |
+    > 442 |         expect(resOriginal.status).toBe(200);
+          |                                    ^
+      443 |         expect(resDedup.status).toBe(200);
+      444 |         expect(resOriginal.body).toEqual(resDedup.body);
+      445 |       });
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ● Propiedades (2.x) › Property 2: idempotencia respecto de duplicados › iteración 14: resultado idéntico con el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      440 |           .send({ aprobados: [...new Set(conDuplicados)] });
+      441 |
+    > 442 |         expect(resOriginal.status).toBe(200);
+          |                                    ^
+      443 |         expect(resDedup.status).toBe(200);
+      444 |         expect(resOriginal.body).toEqual(resDedup.body);
+      445 |       });
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ● Propiedades (2.x) › Property 2: idempotencia respecto de duplicados › iteración 15: resultado idéntico con el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      440 |           .send({ aprobados: [...new Set(conDuplicados)] });
+      441 |
+    > 442 |         expect(resOriginal.status).toBe(200);
+          |                                    ^
+      443 |         expect(resDedup.status).toBe(200);
+      444 |         expect(resOriginal.body).toEqual(resDedup.body);
+      445 |       });
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ● Propiedades (2.x) › Property 2: idempotencia respecto de duplicados › iteración 16: resultado idéntico con el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      440 |           .send({ aprobados: [...new Set(conDuplicados)] });
+      441 |
+    > 442 |         expect(resOriginal.status).toBe(200);
+          |                                    ^
+      443 |         expect(resDedup.status).toBe(200);
+      444 |         expect(resOriginal.body).toEqual(resDedup.body);
+      445 |       });
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ● Propiedades (2.x) › Property 2: idempotencia respecto de duplicados › iteración 17: resultado idéntico con el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      440 |           .send({ aprobados: [...new Set(conDuplicados)] });
+      441 |
+    > 442 |         expect(resOriginal.status).toBe(200);
+          |                                    ^
+      443 |         expect(resDedup.status).toBe(200);
+      444 |         expect(resOriginal.body).toEqual(resDedup.body);
+      445 |       });
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ● Propiedades (2.x) › Property 2: idempotencia respecto de duplicados › iteración 18: resultado idéntico con el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      440 |           .send({ aprobados: [...new Set(conDuplicados)] });
+      441 |
+    > 442 |         expect(resOriginal.status).toBe(200);
+          |                                    ^
+      443 |         expect(resDedup.status).toBe(200);
+      444 |         expect(resOriginal.body).toEqual(resDedup.body);
+      445 |       });
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ● Propiedades (2.x) › Property 2: idempotencia respecto de duplicados › iteración 19: resultado idéntico con el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      440 |           .send({ aprobados: [...new Set(conDuplicados)] });
+      441 |
+    > 442 |         expect(resOriginal.status).toBe(200);
+          |                                    ^
+      443 |         expect(resDedup.status).toBe(200);
+      444 |         expect(resOriginal.body).toEqual(resDedup.body);
+      445 |       });
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ● Propiedades (2.x) › Property 2: idempotencia respecto de duplicados › iteración 20: resultado idéntico con el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      440 |           .send({ aprobados: [...new Set(conDuplicados)] });
+      441 |
+    > 442 |         expect(resOriginal.status).toBe(200);
+          |                                    ^
+      443 |         expect(resDedup.status).toBe(200);
+      444 |         expect(resOriginal.body).toEqual(resDedup.body);
+      445 |       });
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ● Propiedades (2.x) › Property 4: rechazo de códigos inexistentes › "1INF99" (alfanumérico, no existe) → 400 con mensaje exacto
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      460 |           .send({ aprobados: [codigo] });
+      461 |
+    > 462 |         expect(res.status).toBe(400);
+          |                            ^
+      463 |         expect(res.body).toEqual({
+      464 |           error: `código de curso inexistente: ${codigo}`,
+      465 |         });
+
+      at Object.toBe (tests/habilitados.test.js:462:28)
+
+  ● Propiedades (2.x) › Property 4: rechazo de códigos inexistentes › "1XYZ00" (alfanumérico, no existe) → 400 con mensaje exacto
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      460 |           .send({ aprobados: [codigo] });
+      461 |
+    > 462 |         expect(res.status).toBe(400);
+          |                            ^
+      463 |         expect(res.body).toEqual({
+      464 |           error: `código de curso inexistente: ${codigo}`,
+      465 |         });
+
+      at Object.toBe (tests/habilitados.test.js:462:28)
+
+  ● Propiedades (2.x) › Property 4: rechazo de códigos inexistentes › "ZZZ999" (alfanumérico, no existe) → 400 con mensaje exacto
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      460 |           .send({ aprobados: [codigo] });
+      461 |
+    > 462 |         expect(res.status).toBe(400);
+          |                            ^
+      463 |         expect(res.body).toEqual({
+      464 |           error: `código de curso inexistente: ${codigo}`,
+      465 |         });
+
+      at Object.toBe (tests/habilitados.test.js:462:28)
+
+  ● Propiedades (2.x) › Property 4: rechazo de códigos inexistentes › "AAAA00" (alfanumérico, no existe) → 400 con mensaje exacto
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      460 |           .send({ aprobados: [codigo] });
+      461 |
+    > 462 |         expect(res.status).toBe(400);
+          |                            ^
+      463 |         expect(res.body).toEqual({
+      464 |           error: `código de curso inexistente: ${codigo}`,
+      465 |         });
+
+      at Object.toBe (tests/habilitados.test.js:462:28)
+
+  ● Propiedades (2.x) › Property 4: rechazo de códigos inexistentes › "X1Y2Z3" (alfanumérico, no existe) → 400 con mensaje exacto
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      460 |           .send({ aprobados: [codigo] });
+      461 |
+    > 462 |         expect(res.status).toBe(400);
+          |                            ^
+      463 |         expect(res.body).toEqual({
+      464 |           error: `código de curso inexistente: ${codigo}`,
+      465 |         });
+
+      at Object.toBe (tests/habilitados.test.js:462:28)
+
+  ● Propiedades (2.x) › Property 4: rechazo de códigos inexistentes › "9INF00" (alfanumérico, no existe) → 400 con mensaje exacto
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      460 |           .send({ aprobados: [codigo] });
+      461 |
+    > 462 |         expect(res.status).toBe(400);
+          |                            ^
+      463 |         expect(res.body).toEqual({
+      464 |           error: `código de curso inexistente: ${codigo}`,
+      465 |         });
+
+      at Object.toBe (tests/habilitados.test.js:462:28)
+
+  ● Propiedades (2.x) › Property 4: rechazo de códigos inexistentes › "QWERTY9" (alfanumérico, no existe) → 400 con mensaje exacto
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      460 |           .send({ aprobados: [codigo] });
+      461 |
+    > 462 |         expect(res.status).toBe(400);
+          |                            ^
+      463 |         expect(res.body).toEqual({
+      464 |           error: `código de curso inexistente: ${codigo}`,
+      465 |         });
+
+      at Object.toBe (tests/habilitados.test.js:462:28)
+
+  ● POST /habilitados — seguridad (3.x) › 3.1 error interno del repositorio → 500 › cuando repositorio.listar() lanza → 500 con {"error": "internal server error"}
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 500
+    Received: 404
+
+      494 |         .send({ aprobados: [] });
+      495 |
+    > 496 |       expect(res.status).toBe(500);
+          |                          ^
+      497 |       expect(res.body).toEqual({ error: 'internal server error' });
+      498 |     });
+      499 |
+
+      at Object.toBe (tests/habilitados.test.js:496:26)
+
+  ● POST /habilitados — seguridad (3.x) › 3.3 código con <script> → 400 sin reflejo del payload ni internos › "1INF30<script>" → 400 sin el valor reflejado fuera del mensaje controlado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      555 |         .send({ aprobados: ['1INF30<script>'] });
+      556 |
+    > 557 |       expect(res.status).toBe(400);
+          |                          ^
+      558 |       expect(res.body).toEqual({ error: 'formato de código inválido' });
+      559 |
+      560 |       // El cuerpo no refleja el payload malicioso
+
+      at Object.toBe (tests/habilitados.test.js:557:26)
+
+  ● POST /habilitados — seguridad (3.x) › 3.3 código con <script> → 400 sin reflejo del payload ni internos › "alert(1);drop table" → 400 sin reflejo del payload
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      575 |         .send({ aprobados: ['alert(1);drop table'] });
+      576 |
+    > 577 |       expect(res.status).toBe(400);
+          |                          ^
+      578 |       expect(res.body).toEqual({ error: 'formato de código inválido' });
+      579 |
+      580 |       const texto = JSON.stringify(res.body);
+
+      at Object.toBe (tests/habilitados.test.js:577:26)
+
+  ● Property 3: Rechazo de códigos malformados sin fuga de información interna › código malformado "1INF30<script>" → 400 sin internos
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      616 |         .send({ aprobados: [codigo] });
+      617 |
+    > 618 |       expect(res.status).toBe(400);
+          |                          ^
+      619 |       expect(res.body).toEqual({ error: 'formato de código inválido' });
+      620 |
+      621 |       const texto = JSON.stringify(res.body);
+
+      at Object.toBe (tests/habilitados.test.js:618:26)
+
+  ● Property 3: Rechazo de códigos malformados sin fuga de información interna › código malformado "1INF30 OR 1=1--" → 400 sin internos
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      616 |         .send({ aprobados: [codigo] });
+      617 |
+    > 618 |       expect(res.status).toBe(400);
+          |                          ^
+      619 |       expect(res.body).toEqual({ error: 'formato de código inválido' });
+      620 |
+      621 |       const texto = JSON.stringify(res.body);
+
+      at Object.toBe (tests/habilitados.test.js:618:26)
+
+  ● Property 3: Rechazo de códigos malformados sin fuga de información interna › código malformado "abc<def>" → 400 sin internos
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      616 |         .send({ aprobados: [codigo] });
+      617 |
+    > 618 |       expect(res.status).toBe(400);
+          |                          ^
+      619 |       expect(res.body).toEqual({ error: 'formato de código inválido' });
+      620 |
+      621 |       const texto = JSON.stringify(res.body);
+
+      at Object.toBe (tests/habilitados.test.js:618:26)
+
+  ● Property 3: Rechazo de códigos malformados sin fuga de información interna › código malformado "123;456" → 400 sin internos
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      616 |         .send({ aprobados: [codigo] });
+      617 |
+    > 618 |       expect(res.status).toBe(400);
+          |                          ^
+      619 |       expect(res.body).toEqual({ error: 'formato de código inválido' });
+      620 |
+      621 |       const texto = JSON.stringify(res.body);
+
+      at Object.toBe (tests/habilitados.test.js:618:26)
+
+  ● Property 3: Rechazo de códigos malformados sin fuga de información interna › código malformado "code space" → 400 sin internos
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      616 |         .send({ aprobados: [codigo] });
+      617 |
+    > 618 |       expect(res.status).toBe(400);
+          |                          ^
+      619 |       expect(res.body).toEqual({ error: 'formato de código inválido' });
+      620 |
+      621 |       const texto = JSON.stringify(res.body);
+
+      at Object.toBe (tests/habilitados.test.js:618:26)
+
+  ● Property 3: Rechazo de códigos malformados sin fuga de información interna › código malformado "code	tab" → 400 sin internos
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      616 |         .send({ aprobados: [codigo] });
+      617 |
+    > 618 |       expect(res.status).toBe(400);
+          |                          ^
+      619 |       expect(res.body).toEqual({ error: 'formato de código inválido' });
+      620 |
+      621 |       const texto = JSON.stringify(res.body);
+
+      at Object.toBe (tests/habilitados.test.js:618:26)
+
+  ● Property 3: Rechazo de códigos malformados sin fuga de información interna › código malformado "../etc/passwd" → 400 sin internos
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      616 |         .send({ aprobados: [codigo] });
+      617 |
+    > 618 |       expect(res.status).toBe(400);
+          |                          ^
+      619 |       expect(res.body).toEqual({ error: 'formato de código inválido' });
+      620 |
+      621 |       const texto = JSON.stringify(res.body);
+
+      at Object.toBe (tests/habilitados.test.js:618:26)
+
+  ● Property 3: Rechazo de códigos malformados sin fuga de información interna › código malformado "código#1" → 400 sin internos
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      616 |         .send({ aprobados: [codigo] });
+      617 |
+    > 618 |       expect(res.status).toBe(400);
+          |                          ^
+      619 |       expect(res.body).toEqual({ error: 'formato de código inválido' });
+      620 |
+      621 |       const texto = JSON.stringify(res.body);
+
+      at Object.toBe (tests/habilitados.test.js:618:26)
+
+  ● Property 3: Rechazo de códigos malformados sin fuga de información interna › código malformado "INF@30" → 400 sin internos
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      616 |         .send({ aprobados: [codigo] });
+      617 |
+    > 618 |       expect(res.status).toBe(400);
+          |                          ^
+      619 |       expect(res.body).toEqual({ error: 'formato de código inválido' });
+      620 |
+      621 |       const texto = JSON.stringify(res.body);
+
+      at Object.toBe (tests/habilitados.test.js:618:26)
+
+  ● Property 3: Rechazo de códigos malformados sin fuga de información interna › código malformado "1INF30!" → 400 sin internos
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      616 |         .send({ aprobados: [codigo] });
+      617 |
+    > 618 |       expect(res.status).toBe(400);
+          |                          ^
+      619 |       expect(res.body).toEqual({ error: 'formato de código inválido' });
+      620 |
+      621 |       const texto = JSON.stringify(res.body);
+
+      at Object.toBe (tests/habilitados.test.js:618:26)
+
+  ● Property 3: Rechazo de códigos malformados sin fuga de información interna › código malformado "1INF30\n" → 400 sin internos
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      616 |         .send({ aprobados: [codigo] });
+      617 |
+    > 618 |       expect(res.status).toBe(400);
+          |                          ^
+      619 |       expect(res.body).toEqual({ error: 'formato de código inválido' });
+      620 |
+      621 |       const texto = JSON.stringify(res.body);
+
+      at Object.toBe (tests/habilitados.test.js:618:26)
+
+  ● Property 3: Rechazo de códigos malformados sin fuga de información interna › código malformado "1INF30\r" → 400 sin internos
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      616 |         .send({ aprobados: [codigo] });
+      617 |
+    > 618 |       expect(res.status).toBe(400);
+          |                          ^
+      619 |       expect(res.body).toEqual({ error: 'formato de código inválido' });
+      620 |
+      621 |       const texto = JSON.stringify(res.body);
+
+      at Object.toBe (tests/habilitados.test.js:618:26)
+
+  ● Property 3: Rechazo de códigos malformados sin fuga de información interna › código malformado "<img src=x>" → 400 sin internos
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      616 |         .send({ aprobados: [codigo] });
+      617 |
+    > 618 |       expect(res.status).toBe(400);
+          |                          ^
+      619 |       expect(res.body).toEqual({ error: 'formato de código inválido' });
+      620 |
+      621 |       const texto = JSON.stringify(res.body);
+
+      at Object.toBe (tests/habilitados.test.js:618:26)
+
+  ● Property 3: Rechazo de códigos malformados sin fuga de información interna › código malformado "INF"30" → 400 sin internos
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      616 |         .send({ aprobados: [codigo] });
+      617 |
+    > 618 |       expect(res.status).toBe(400);
+          |                          ^
+      619 |       expect(res.body).toEqual({ error: 'formato de código inválido' });
+      620 |
+      621 |       const texto = JSON.stringify(res.body);
+
+      at Object.toBe (tests/habilitados.test.js:618:26)
+
+  ● Property 3: Rechazo de códigos malformados sin fuga de información interna › código malformado "INF'30" → 400 sin internos
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      616 |         .send({ aprobados: [codigo] });
+      617 |
+    > 618 |       expect(res.status).toBe(400);
+          |                          ^
+      619 |       expect(res.body).toEqual({ error: 'formato de código inválido' });
+      620 |
+      621 |       const texto = JSON.stringify(res.body);
+
+      at Object.toBe (tests/habilitados.test.js:618:26)
+
+FAIL tests/habilitados-calculo.test.js
+  ● calcularHabilitados (funciones puras) › Propiedad 1: oráculo independiente (1.1) › coincide con el oráculo para: conjunto del enunciado
+
+    src/data/cursos-habilitados.js aún no existe. Implementar en tarea 1.2.
+
+      42 |     if (!calcularHabilitados) {
+      43 |       // Forzar fallo descriptivo cuando el módulo no existe aún
+    > 44 |       throw new Error(
+         |             ^
+      45 |         'src/data/cursos-habilitados.js aún no existe. Implementar en tarea 1.2.',
+      46 |       );
+      47 |     }
+
+      at Object.<anonymous> (tests/habilitados-calculo.test.js:44:13)
+
+  ● calcularHabilitados (funciones puras) › Propiedad 1: oráculo independiente (1.1) › coincide con el oráculo para: conjunto pequeño
+
+    src/data/cursos-habilitados.js aún no existe. Implementar en tarea 1.2.
+
+      42 |     if (!calcularHabilitados) {
+      43 |       // Forzar fallo descriptivo cuando el módulo no existe aún
+    > 44 |       throw new Error(
+         |             ^
+      45 |         'src/data/cursos-habilitados.js aún no existe. Implementar en tarea 1.2.',
+      46 |       );
+      47 |     }
+
+      at Object.<anonymous> (tests/habilitados-calculo.test.js:44:13)
+
+  ● calcularHabilitados (funciones puras) › Propiedad 1: oráculo independiente (1.1) › coincide con el oráculo para: varios del ciclo 5
+
+    src/data/cursos-habilitados.js aún no existe. Implementar en tarea 1.2.
+
+      42 |     if (!calcularHabilitados) {
+      43 |       // Forzar fallo descriptivo cuando el módulo no existe aún
+    > 44 |       throw new Error(
+         |             ^
+      45 |         'src/data/cursos-habilitados.js aún no existe. Implementar en tarea 1.2.',
+      46 |       );
+      47 |     }
+
+      at Object.<anonymous> (tests/habilitados-calculo.test.js:44:13)
+
+  ● calcularHabilitados (funciones puras) › Propiedad 1: oráculo independiente (1.1) › coincide con el oráculo para: conjunto con cursos de varios ciclos
+
+    src/data/cursos-habilitados.js aún no existe. Implementar en tarea 1.2.
+
+      42 |     if (!calcularHabilitados) {
+      43 |       // Forzar fallo descriptivo cuando el módulo no existe aún
+    > 44 |       throw new Error(
+         |             ^
+      45 |         'src/data/cursos-habilitados.js aún no existe. Implementar en tarea 1.2.',
+      46 |       );
+      47 |     }
+
+      at Object.<anonymous> (tests/habilitados-calculo.test.js:44:13)
+
+  ● calcularHabilitados (funciones puras) › 1.1 solo cursos no aprobados con prerrequisitos satisfechos › los cursos aprobados no aparecen en el resultado
+
+    src/data/cursos-habilitados.js aún no existe. Implementar en tarea 1.2.
+
+      42 |     if (!calcularHabilitados) {
+      43 |       // Forzar fallo descriptivo cuando el módulo no existe aún
+    > 44 |       throw new Error(
+         |             ^
+      45 |         'src/data/cursos-habilitados.js aún no existe. Implementar en tarea 1.2.',
+      46 |       );
+      47 |     }
+
+      at Object.<anonymous> (tests/habilitados-calculo.test.js:44:13)
+
+  ● calcularHabilitados (funciones puras) › 1.1 solo cursos no aprobados con prerrequisitos satisfechos › ningún curso tiene prerrequisitos fuera de aprobados
+
+    src/data/cursos-habilitados.js aún no existe. Implementar en tarea 1.2.
+
+      42 |     if (!calcularHabilitados) {
+      43 |       // Forzar fallo descriptivo cuando el módulo no existe aún
+    > 44 |       throw new Error(
+         |             ^
+      45 |         'src/data/cursos-habilitados.js aún no existe. Implementar en tarea 1.2.',
+      46 |       );
+      47 |     }
+
+      at Object.<anonymous> (tests/habilitados-calculo.test.js:44:13)
+
+  ● calcularHabilitados (funciones puras) › 1.1 solo cursos no aprobados con prerrequisitos satisfechos › cada elemento tiene exactamente id, name, credits, cycle, type
+
+    src/data/cursos-habilitados.js aún no existe. Implementar en tarea 1.2.
+
+      42 |     if (!calcularHabilitados) {
+      43 |       // Forzar fallo descriptivo cuando el módulo no existe aún
+    > 44 |       throw new Error(
+         |             ^
+      45 |         'src/data/cursos-habilitados.js aún no existe. Implementar en tarea 1.2.',
+      46 |       );
+      47 |     }
+
+      at Object.<anonymous> (tests/habilitados-calculo.test.js:44:13)
+
+  ● calcularHabilitados (funciones puras) › 1.1 solo cursos no aprobados con prerrequisitos satisfechos › resultado ordenado por id ascendente
+
+    src/data/cursos-habilitados.js aún no existe. Implementar en tarea 1.2.
+
+      42 |     if (!calcularHabilitados) {
+      43 |       // Forzar fallo descriptivo cuando el módulo no existe aún
+    > 44 |       throw new Error(
+         |             ^
+      45 |         'src/data/cursos-habilitados.js aún no existe. Implementar en tarea 1.2.',
+      46 |       );
+      47 |     }
+
+      at Object.<anonymous> (tests/habilitados-calculo.test.js:44:13)
+
+  ● calcularHabilitados (funciones puras) › 1.2 cursos sin prerrequisitos › 1GES92 (sin prereq) está en el resultado cuando no está aprobado
+
+    src/data/cursos-habilitados.js aún no existe. Implementar en tarea 1.2.
+
+      42 |     if (!calcularHabilitados) {
+      43 |       // Forzar fallo descriptivo cuando el módulo no existe aún
+    > 44 |       throw new Error(
+         |             ^
+      45 |         'src/data/cursos-habilitados.js aún no existe. Implementar en tarea 1.2.',
+      46 |       );
+      47 |     }
+
+      at Object.<anonymous> (tests/habilitados-calculo.test.js:44:13)
+
+  ● calcularHabilitados (funciones puras) › 1.2 cursos sin prerrequisitos › 1INF25 (sin prereq) NO aparece cuando está en aprobados
+
+    src/data/cursos-habilitados.js aún no existe. Implementar en tarea 1.2.
+
+      42 |     if (!calcularHabilitados) {
+      43 |       // Forzar fallo descriptivo cuando el módulo no existe aún
+    > 44 |       throw new Error(
+         |             ^
+      45 |         'src/data/cursos-habilitados.js aún no existe. Implementar en tarea 1.2.',
+      46 |       );
+      47 |     }
+
+      at Object.<anonymous> (tests/habilitados-calculo.test.js:44:13)
+
+  ● calcularHabilitados (funciones puras) › 2.6 arreglo vacío › [] devuelve exactamente los cursos sin prerrequisitos (26)
+
+    src/data/cursos-habilitados.js aún no existe. Implementar en tarea 1.2.
+
+      42 |     if (!calcularHabilitados) {
+      43 |       // Forzar fallo descriptivo cuando el módulo no existe aún
+    > 44 |       throw new Error(
+         |             ^
+      45 |         'src/data/cursos-habilitados.js aún no existe. Implementar en tarea 1.2.',
+      46 |       );
+      47 |     }
+
+      at Object.<anonymous> (tests/habilitados-calculo.test.js:44:13)
+
+  ● calcularHabilitados (funciones puras) › 2.6 arreglo vacío › [] no devuelve ningún curso con prerrequisitos
+
+    src/data/cursos-habilitados.js aún no existe. Implementar en tarea 1.2.
+
+      42 |     if (!calcularHabilitados) {
+      43 |       // Forzar fallo descriptivo cuando el módulo no existe aún
+    > 44 |       throw new Error(
+         |             ^
+      45 |         'src/data/cursos-habilitados.js aún no existe. Implementar en tarea 1.2.',
+      46 |       );
+      47 |     }
+
+      at Object.<anonymous> (tests/habilitados-calculo.test.js:44:13)
+
+Test Suites: 2 failed, 2 total
+Tests:       84 failed, 7 passed, 91 total
+Snapshots:   0 total
+Time:        1.084 s, estimated 2 s
+Ran all test suites matching /tests\\habilitados.test.js|tests\\habilitados-calculo.test.js/i.
+Force exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?
