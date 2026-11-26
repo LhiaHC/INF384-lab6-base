@@ -54,14 +54,14 @@ Implementación de `POST /habilitados` siguiendo TDD (criterio E4 del diseño): 
     - Los tests de ruta siguen fallando (404) porque la ruta no existe todavía
     - **Validates: Requirements 1.1, 1.2, 2.6, 2.7**
 
-- [ ] 3. Integrar POST /habilitados y verificar todas las pruebas
+- [x] 3. Integrar POST /habilitados y verificar todas las pruebas
   - [x] 3.1 Crear el router `src/routes/habilitados.js`
     - Definir `POST /habilitados`: parsear el cuerpo, invocar validación y cálculo, traducir el resultado a 200 con la lista de cursos o 400 con `{"error": "<mensaje>"}`
     - **Validates: Requirements 1.1, 2.1, 2.8**
   - [x] 3.2 Montar el router en `src/app.js`
     - Registrar el router en `/habilitados`
     - **Validates: Requirements 1.1, 1.3**
-  - [ ] 3.3 Verificar la suite completa
+  - [x] 3.3 Verificar la suite completa
     - `npm test` pasa, incluidos el caso de exactamente 27 cursos (criterio 1.3) y la cobertura sobre 80%
     - Capturar la salida verde como evidencia (E4 / TDD)
     - **Validates: Requirements 1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 3.1, 3.2, 3.3**
