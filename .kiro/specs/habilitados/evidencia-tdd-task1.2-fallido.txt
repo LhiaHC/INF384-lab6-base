@@ -1,0 +1,1123 @@
+﻿node.exe : FAIL tests/habilitados.test.js
+En línea: 1 Carácter: 1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (FAIL tests/habilitados.test.js:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  POST /habilitados ÔÇö criterios funcionales 1.x
+    1.1 c├ílculo de habilitados
+      ├ù responde 200 con un arreglo de cursos (30 ms)
+      ├ù solo incluye cursos no aprobados cuyos prerrequisitos est├ín todos en aprobados (5 ms)
+      ├ù cada curso incluye id, name, credits, cycle y type, sin prerequisites (2 ms)
+      ├ù la respuesta est├í ordenada por id ascendente (2 ms)
+    1.2 cursos sin prerrequisitos
+      ├ù incluye 1GES92 (sin prerrequisitos) cuando no est├í en aprobados (3 ms)
+      ├ù con [] devuelve todos los cursos sin prerrequisitos (26) (2 ms)
+    1.3 ejemplo del enunciado
+      ├ù {"aprobados": ["1INF25", "1INF27", "1INF49"]} devuelve exactamente 27 cursos (2 ms)
+      ├ù incluye 1INF29, 1INF30, 1INF31 y 1INF32 (2 ms)
+    1.4 uso del repositorio sin efectos sobre los datos
+      ├ù data/cursos.json no cambia (hash id├®ntico antes y despu├®s) (5 ms)
+      ├ù el c├ílculo pasa por repositorio.listar() (3 ms)
+      ├ù data/cursos.json tambi├®n queda intacto ante solicitud vac├¡a (2 ms)
+  POST /habilitados ÔÇö validaci├│n de entrada (2.x)
+    2.1 aprobados no es un arreglo
+      ├ù cadena de texto en lugar de arreglo ÔåÆ 400 (2 ms)
+      ├ù n├║mero en lugar de arreglo ÔåÆ 400 (1 ms)
+    2.2 elementos deben ser cadenas
+      ├ù arreglo con un n├║mero [123] ÔåÆ 400 (1 ms)
+      ├ù arreglo con un objeto ÔåÆ 400 (4 ms)
+    2.3 l├¡mite de 100 elementos
+      ├ù 5000 copias duplicadas de un mismo c├│digo ÔåÆ 400 (antes de deduplicar) (2 ms)
+      ├ù 101 c├│digos v├ílidos distintos ÔåÆ 400 (3 ms)
+    2.4 formato de c├│digo
+      ├ù "1INF30<script>" ÔåÆ 400 sin reflejar el payload (2 ms)
+      ├ù c├│digo con espacios "1INF 30" ÔåÆ 400 (1 ms)
+      ├ù c├│digo con inyecci├│n "1INF30 OR 1=1--" ÔåÆ 400 (2 ms)
+    2.5 campo aprobados ausente
+      ├ù cuerpo {} ÔåÆ 400 (2 ms)
+      ├ù cuerpo con otro campo ÔåÆ 400 (2 ms)
+    2.6 arreglo vac├¡o
+      ├ù [] ÔåÆ 200 con todos los cursos sin prerrequisitos (2 ms)
+    2.7 deduplicaci├│n tras el l├¡mite
+      ├ù 100 elementos exactos con duplicados ÔåÆ 200 (2 ms)
+      ├ù 100 duplicados de un mismo c├│digo ÔåÆ 200 (equivalente a [ese c├│digo]) (2 ms)
+    2.8 c├│digo inexistente
+      ├ù 1INF99 ÔåÆ 400 con mensaje exacto (1 ms)
+      ├ù c├│digo inexistente entre c├│digos v├ílidos ÔåÆ 400 con mensaje exacto (2 ms)
+  Propiedades (2.x)
+    Property 2: idempotencia respecto de duplicados
+      ├ù iteraci├│n 1: resultado id├®ntico con el arreglo deduplicado (3 ms)
+      ├ù iteraci├│n 2: resultado id├®ntico con el arreglo deduplicado (3 ms)
+      ├ù iteraci├│n 3: resultado id├®ntico con el arreglo deduplicado (6 ms)
+      ├ù iteraci├│n 4: resultado id├®ntico con el arreglo deduplicado (3 ms)
+      ├ù iteraci├│n 5: resultado id├®ntico con el arreglo deduplicado (3 ms)
+      ├ù iteraci├│n 6: resultado id├®ntico con el arreglo deduplicado (2 ms)
+      ├ù iteraci├│n 7: resultado id├®ntico con el arreglo deduplicado (3 ms)
+      ├ù iteraci├│n 8: resultado id├®ntico con el arreglo deduplicado (4 ms)
+      ├ù iteraci├│n 9: resultado id├®ntico con el arreglo deduplicado (3 ms)
+      ├ù iteraci├│n 10: resultado id├®ntico con el arreglo deduplicado (2 ms)
+      ├ù iteraci├│n 11: resultado id├®ntico con el arreglo deduplicado (2 ms)
+      ├ù iteraci├│n 12: resultado id├®ntico con el arreglo deduplicado (2 ms)
+      ├ù iteraci├│n 13: resultado id├®ntico con el arreglo deduplicado (3 ms)
+      ├ù iteraci├│n 14: resultado id├®ntico con el arreglo deduplicado (3 ms)
+      ├ù iteraci├│n 15: resultado id├®ntico con el arreglo deduplicado (3 ms)
+      ├ù iteraci├│n 16: resultado id├®ntico con el arreglo deduplicado (3 ms)
+      ├ù iteraci├│n 17: resultado id├®ntico con el arreglo deduplicado (2 ms)
+      ├ù iteraci├│n 18: resultado id├®ntico con el arreglo deduplicado (3 ms)
+      ├ù iteraci├│n 19: resultado id├®ntico con el arreglo deduplicado (3 ms)
+      ├ù iteraci├│n 20: resultado id├®ntico con el arreglo deduplicado (3 ms)
+    Property 4: rechazo de c├│digos inexistentes
+      ├ù "1INF99" (alfanum├®rico, no existe) ÔåÆ 400 con mensaje exacto (1 ms)
+      ├ù "1XYZ00" (alfanum├®rico, no existe) ÔåÆ 400 con mensaje exacto (2 ms)
+      ├ù "ZZZ999" (alfanum├®rico, no existe) ÔåÆ 400 con mensaje exacto (2 ms)
+      ├ù "AAAA00" (alfanum├®rico, no existe) ÔåÆ 400 con mensaje exacto (1 ms)
+      ├ù "X1Y2Z3" (alfanum├®rico, no existe) ÔåÆ 400 con mensaje exacto (2 ms)
+      ├ù "9INF00" (alfanum├®rico, no existe) ÔåÆ 400 con mensaje exacto (2 ms)
+      ├ù "QWERTY9" (alfanum├®rico, no existe) ÔåÆ 400 con mensaje exacto (2 ms)
+
+  ÔùÅ POST /habilitados ÔÇö criterios funcionales 1.x ÔÇ║ 1.1 c├ílculo de habilitados ÔÇ║ responde 200 con un arreglo 
+de cursos
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 26 |[39m         [33m.[39msend({ aprobados[33m:[39m [[32m'1INF25'[39m[33m,[39m 
+[32m'1INF27'[39m[33m,[39m [32m'1INF49'[39m] })[33m;[39m
+     [90m 27 |[39m
+    [31m[1m>[22m[39m[90m 28 |[39m       expect(res[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m    |[39m                          [31m[1m^[22m[39m
+     [90m 29 |[39m       
+expect([33mArray[39m[33m.[39misArray(res[33m.[39mbody))[33m.[39mtoBe([36mtrue[39m)[33m;[39m
+     [90m 30 |[39m     })[33m;[39m
+     [90m 31 |[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:28:26)
+
+  ÔùÅ POST /habilitados ÔÇö criterios funcionales 1.x ÔÇ║ 1.1 c├ílculo de habilitados ÔÇ║ solo incluye cursos no 
+aprobados cuyos prerrequisitos est├ín todos en aprobados
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 36 |[39m         [33m.[39msend({ aprobados })[33m;[39m
+     [90m 37 |[39m
+    [31m[1m>[22m[39m[90m 38 |[39m       expect(res[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m    |[39m                          [31m[1m^[22m[39m
+     [90m 39 |[39m
+     [90m 40 |[39m       [36mconst[39m catalogo [33m=[39m repositorio[33m.[39mlistar()[33m;[39m
+     [90m 41 |[39m       [36mconst[39m setAprobados [33m=[39m [36mnew[39m 
+[33mSet[39m(aprobados)[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:38:26)
+
+  ÔùÅ POST /habilitados ÔÇö criterios funcionales 1.x ÔÇ║ 1.1 c├ílculo de habilitados ÔÇ║ cada curso incluye id, name, 
+credits, cycle y type, sin prerequisites
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 69 |[39m         [33m.[39msend({ aprobados[33m:[39m [[32m'1INF25'[39m] })[33m;[39m
+     [90m 70 |[39m
+    [31m[1m>[22m[39m[90m 71 |[39m       expect(res[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m    |[39m                          [31m[1m^[22m[39m
+     [90m 72 |[39m       expect(res[33m.[39mbody[33m.[39mlength)[33m.[39mtoBeGreaterThan([35m0[39m)[33m;[39m
+     [90m 73 |[39m
+     [90m 74 |[39m       [36mfor[39m ([36mconst[39m curso [36mof[39m res[33m.[39mbody) {[0m
+
+      at Object.toBe (tests/habilitados.test.js:71:26)
+
+  ÔùÅ POST /habilitados ÔÇö criterios funcionales 1.x ÔÇ║ 1.1 c├ílculo de habilitados ÔÇ║ la respuesta est├í ordenada 
+por id ascendente
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 90 |[39m         [33m.[39msend({ aprobados[33m:[39m [[32m'1INF25'[39m[33m,[39m 
+[32m'1INF27'[39m[33m,[39m [32m'1INF49'[39m] })[33m;[39m
+     [90m 91 |[39m
+    [31m[1m>[22m[39m[90m 92 |[39m       expect(res[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m    |[39m                          [31m[1m^[22m[39m
+     [90m 93 |[39m       [36mconst[39m lista [33m=[39m ids(res)[33m;[39m
+     [90m 94 |[39m       [36mconst[39m ordenada [33m=[39m [[33m...[39mlista][33m.[39msort((a[33m,[39m b) 
+[33m=>[39m a[33m.[39mlocaleCompare(b))[33m;[39m
+     [90m 95 |[39m       expect(lista)[33m.[39mtoEqual(ordenada)[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:92:26)
+
+  ÔùÅ POST /habilitados ÔÇö criterios funcionales 1.x ÔÇ║ 1.2 cursos sin prerrequisitos ÔÇ║ incluye 1GES92 (sin 
+prerrequisitos) cuando no est├í en aprobados
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 104 |[39m         [33m.[39msend({ aprobados[33m:[39m [[32m'1INF25'[39m] })[33m;[39m
+     [90m 105 |[39m
+    [31m[1m>[22m[39m[90m 106 |[39m       expect(res[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                          [31m[1m^[22m[39m
+     [90m 107 |[39m       expect(ids(res))[33m.[39mtoContain([32m'1GES92'[39m)[33m;[39m
+     [90m 108 |[39m     })[33m;[39m
+     [90m 109 |[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:106:26)
+
+  ÔùÅ POST /habilitados ÔÇö criterios funcionales 1.x ÔÇ║ 1.2 cursos sin prerrequisitos ÔÇ║ con [] devuelve todos los 
+cursos sin prerrequisitos (26)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 113 |[39m         [33m.[39msend({ aprobados[33m:[39m [] })[33m;[39m
+     [90m 114 |[39m
+    [31m[1m>[22m[39m[90m 115 |[39m       expect(res[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                          [31m[1m^[22m[39m
+     [90m 116 |[39m       [36mconst[39m sinPrerrequisitos [33m=[39m repositorio
+     [90m 117 |[39m         [33m.[39mlistar()
+     [90m 118 |[39m         [33m.[39mfilter([0m
+
+      at Object.toBe (tests/habilitados.test.js:115:26)
+
+  ÔùÅ POST /habilitados ÔÇö criterios funcionales 1.x ÔÇ║ 1.3 ejemplo del enunciado ÔÇ║ {"aprobados": ["1INF25", 
+"1INF27", "1INF49"]} devuelve exactamente 27 cursos
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 133 |[39m         [33m.[39msend({ aprobados[33m:[39m [[32m'1INF25'[39m[33m,[39m 
+[32m'1INF27'[39m[33m,[39m [32m'1INF49'[39m] })[33m;[39m
+     [90m 134 |[39m
+    [31m[1m>[22m[39m[90m 135 |[39m       expect(res[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                          [31m[1m^[22m[39m
+     [90m 136 |[39m       expect(res[33m.[39mbody)[33m.[39mtoHaveLength([35m27[39m)[33m;[39m
+     [90m 137 |[39m     })[33m;[39m
+     [90m 138 |[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:135:26)
+
+  ÔùÅ POST /habilitados ÔÇö criterios funcionales 1.x ÔÇ║ 1.3 ejemplo del enunciado ÔÇ║ incluye 1INF29, 1INF30, 1INF31 
+y 1INF32
+
+    TypeError: res.body.map is not a function
+
+    [0m [90m 15 |[39m
+     [90m 16 |[39m [36mfunction[39m ids(res) {
+    [31m[1m>[22m[39m[90m 17 |[39m   [36mreturn[39m res[33m.[39mbody[33m.[39mmap((curso) [33m=>[39m 
+curso[33m.[39mid)[33m;[39m
+     [90m    |[39m                   [31m[1m^[22m[39m
+     [90m 18 |[39m }
+     [90m 19 |[39m
+     [90m 20 |[39m describe([32m'POST /habilitados ÔÇö criterios funcionales 1.x'[39m[33m,[39m () [33m=>[39m 
+{[0m
+
+      at map (tests/habilitados.test.js:17:19)
+      at Object.ids (tests/habilitados.test.js:144:21)
+
+  ÔùÅ POST /habilitados ÔÇö criterios funcionales 1.x ÔÇ║ 1.4 uso del repositorio sin efectos sobre los datos ÔÇ║ 
+data/cursos.json no cambia (hash id├®ntico antes y despu├®s)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 159 |[39m         [33m.[39msend({ aprobados[33m:[39m [[32m'1INF25'[39m[33m,[39m 
+[32m'1INF27'[39m[33m,[39m [32m'1INF49'[39m] })[33m;[39m
+     [90m 160 |[39m
+    [31m[1m>[22m[39m[90m 161 |[39m       expect(res[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                          [31m[1m^[22m[39m
+     [90m 162 |[39m       expect(hashCursosJson())[33m.[39mtoBe(hashAntes)[33m;[39m
+     [90m 163 |[39m     })[33m;[39m
+     [90m 164 |[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:161:26)
+
+  ÔùÅ POST /habilitados ÔÇö criterios funcionales 1.x ÔÇ║ 1.4 uso del repositorio sin efectos sobre los datos ÔÇ║ el 
+c├ílculo pasa por repositorio.listar()
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 170 |[39m         [33m.[39msend({ aprobados[33m:[39m [[32m'1INF25'[39m] })[33m;[39m
+     [90m 171 |[39m
+    [31m[1m>[22m[39m[90m 172 |[39m       expect(res[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                          [31m[1m^[22m[39m
+     [90m 173 |[39m       expect(espia)[33m.[39mtoHaveBeenCalled()[33m;[39m
+     [90m 174 |[39m       espia[33m.[39mmockRestore()[33m;[39m
+     [90m 175 |[39m     })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:172:26)
+
+  ÔùÅ POST /habilitados ÔÇö criterios funcionales 1.x ÔÇ║ 1.4 uso del repositorio sin efectos sobre los datos ÔÇ║ 
+data/cursos.json tambi├®n queda intacto ante solicitud vac├¡a
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 182 |[39m         [33m.[39msend({ aprobados[33m:[39m [] })[33m;[39m
+     [90m 183 |[39m
+    [31m[1m>[22m[39m[90m 184 |[39m       expect(res[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                          [31m[1m^[22m[39m
+     [90m 185 |[39m       expect(hashCursosJson())[33m.[39mtoBe(hashAntes)[33m;[39m
+     [90m 186 |[39m     })[33m;[39m
+     [90m 187 |[39m   })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:184:26)
+
+  ÔùÅ POST /habilitados ÔÇö validaci├│n de entrada (2.x) ÔÇ║ 2.1 aprobados no es un arreglo ÔÇ║ cadena de texto en 
+lugar de arreglo ÔåÆ 400
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+    [0m [90m 216 |[39m         [33m.[39msend({ aprobados[33m:[39m [32m'1INF25'[39m })[33m;[39m
+     [90m 217 |[39m
+    [31m[1m>[22m[39m[90m 218 |[39m       expect(res[33m.[39mstatus)[33m.[39mtoBe([35m400[39m)[33m;[39m
+     [90m     |[39m                          [31m[1m^[22m[39m
+     [90m 219 |[39m       expect(res[33m.[39mbody)[33m.[39mtoEqual({ error[33m:[39m [32m"'aprobados' debe ser 
+un arreglo de cadenas"[39m })[33m;[39m
+     [90m 220 |[39m     })[33m;[39m
+     [90m 221 |[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:218:26)
+
+  ÔùÅ POST /habilitados ÔÇö validaci├│n de entrada (2.x) ÔÇ║ 2.1 aprobados no es un arreglo ÔÇ║ n├║mero en lugar de 
+arreglo ÔåÆ 400
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+    [0m [90m 225 |[39m         [33m.[39msend({ aprobados[33m:[39m [35m123[39m })[33m;[39m
+     [90m 226 |[39m
+    [31m[1m>[22m[39m[90m 227 |[39m       expect(res[33m.[39mstatus)[33m.[39mtoBe([35m400[39m)[33m;[39m
+     [90m     |[39m                          [31m[1m^[22m[39m
+     [90m 228 |[39m       expect(res[33m.[39mbody)[33m.[39mtoEqual({ error[33m:[39m [32m"'aprobados' debe ser 
+un arreglo de cadenas"[39m })[33m;[39m
+     [90m 229 |[39m     })[33m;[39m
+     [90m 230 |[39m   })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:227:26)
+
+  ÔùÅ POST /habilitados ÔÇö validaci├│n de entrada (2.x) ÔÇ║ 2.2 elementos deben ser cadenas ÔÇ║ arreglo con un n├║mero 
+[123] ÔåÆ 400
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+    [0m [90m 237 |[39m         [33m.[39msend({ aprobados[33m:[39m [[35m123[39m] })[33m;[39m
+     [90m 238 |[39m
+    [31m[1m>[22m[39m[90m 239 |[39m       expect(res[33m.[39mstatus)[33m.[39mtoBe([35m400[39m)[33m;[39m
+     [90m     |[39m                          [31m[1m^[22m[39m
+     [90m 240 |[39m       expect(res[33m.[39mbody)[33m.[39mtoEqual({ error[33m:[39m [32m"'aprobados' debe ser 
+un arreglo de cadenas"[39m })[33m;[39m
+     [90m 241 |[39m     })[33m;[39m
+     [90m 242 |[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:239:26)
+
+  ÔùÅ POST /habilitados ÔÇö validaci├│n de entrada (2.x) ÔÇ║ 2.2 elementos deben ser cadenas ÔÇ║ arreglo con un objeto 
+ÔåÆ 400
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+    [0m [90m 246 |[39m         [33m.[39msend({ aprobados[33m:[39m [{ id[33m:[39m [32m'1INF25'[39m }] 
+})[33m;[39m
+     [90m 247 |[39m
+    [31m[1m>[22m[39m[90m 248 |[39m       expect(res[33m.[39mstatus)[33m.[39mtoBe([35m400[39m)[33m;[39m
+     [90m     |[39m                          [31m[1m^[22m[39m
+     [90m 249 |[39m       expect(res[33m.[39mbody)[33m.[39mtoEqual({ error[33m:[39m [32m"'aprobados' debe ser 
+un arreglo de cadenas"[39m })[33m;[39m
+     [90m 250 |[39m     })[33m;[39m
+     [90m 251 |[39m   })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:248:26)
+
+  ÔùÅ POST /habilitados ÔÇö validaci├│n de entrada (2.x) ÔÇ║ 2.3 l├¡mite de 100 elementos ÔÇ║ 5000 copias duplicadas de 
+un mismo c├│digo ÔåÆ 400 (antes de deduplicar)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+    [0m [90m 260 |[39m         [33m.[39msend({ aprobados[33m:[39m payload })[33m;[39m
+     [90m 261 |[39m
+    [31m[1m>[22m[39m[90m 262 |[39m       expect(res[33m.[39mstatus)[33m.[39mtoBe([35m400[39m)[33m;[39m
+     [90m     |[39m                          [31m[1m^[22m[39m
+     [90m 263 |[39m       expect(res[33m.[39mbody)[33m.[39mtoEqual({ error[33m:[39m [32m"'aprobados' admite 
+como m├íximo 100 elementos"[39m })[33m;[39m
+     [90m 264 |[39m     })[33m;[39m
+     [90m 265 |[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:262:26)
+
+  ÔùÅ POST /habilitados ÔÇö validaci├│n de entrada (2.x) ÔÇ║ 2.3 l├¡mite de 100 elementos ÔÇ║ 101 c├│digos v├ílidos 
+distintos ÔåÆ 400
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+    [0m [90m 277 |[39m         [33m.[39msend({ aprobados[33m:[39m payload })[33m;[39m
+     [90m 278 |[39m
+    [31m[1m>[22m[39m[90m 279 |[39m       expect(res2[33m.[39mstatus)[33m.[39mtoBe([35m400[39m)[33m;[39m
+     [90m     |[39m                           [31m[1m^[22m[39m
+     [90m 280 |[39m       expect(res2[33m.[39mbody)[33m.[39mtoEqual({ error[33m:[39m [32m"'aprobados' admite 
+como m├íximo 100 elementos"[39m })[33m;[39m
+     [90m 281 |[39m     })[33m;[39m
+     [90m 282 |[39m   })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:279:27)
+
+  ÔùÅ POST /habilitados ÔÇö validaci├│n de entrada (2.x) ÔÇ║ 2.4 formato de c├│digo ÔÇ║ "1INF30<script>" ÔåÆ 400 sin 
+reflejar el payload
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+    [0m [90m 289 |[39m         [33m.[39msend({ aprobados[33m:[39m [[32m'1INF30<script>'[39m] })[33m;[39m
+     [90m 290 |[39m
+    [31m[1m>[22m[39m[90m 291 |[39m       expect(res[33m.[39mstatus)[33m.[39mtoBe([35m400[39m)[33m;[39m
+     [90m     |[39m                          [31m[1m^[22m[39m
+     [90m 292 |[39m       expect(res[33m.[39mbody)[33m.[39mtoEqual({ error[33m:[39m [32m'formato de c├│digo 
+inv├ílido'[39m })[33m;[39m
+     [90m 293 |[39m
+     [90m 294 |[39m       [36mconst[39m texto [33m=[39m 
+[33mJSON[39m[33m.[39mstringify(res[33m.[39mbody)[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:291:26)
+
+  ÔùÅ POST /habilitados ÔÇö validaci├│n de entrada (2.x) ÔÇ║ 2.4 formato de c├│digo ÔÇ║ c├│digo con espacios "1INF 30" 
+ÔåÆ 400
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+    [0m [90m 303 |[39m         [33m.[39msend({ aprobados[33m:[39m [[32m'1INF 30'[39m] })[33m;[39m
+     [90m 304 |[39m
+    [31m[1m>[22m[39m[90m 305 |[39m       expect(res[33m.[39mstatus)[33m.[39mtoBe([35m400[39m)[33m;[39m
+     [90m     |[39m                          [31m[1m^[22m[39m
+     [90m 306 |[39m       expect(res[33m.[39mbody)[33m.[39mtoEqual({ error[33m:[39m [32m'formato de c├│digo 
+inv├ílido'[39m })[33m;[39m
+     [90m 307 |[39m     })[33m;[39m
+     [90m 308 |[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:305:26)
+
+  ÔùÅ POST /habilitados ÔÇö validaci├│n de entrada (2.x) ÔÇ║ 2.4 formato de c├│digo ÔÇ║ c├│digo con inyecci├│n "1INF30 
+OR 1=1--" ÔåÆ 400
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+    [0m [90m 312 |[39m         [33m.[39msend({ aprobados[33m:[39m [[32m'1INF30 OR 1=1--'[39m] })[33m;[39m
+     [90m 313 |[39m
+    [31m[1m>[22m[39m[90m 314 |[39m       expect(res[33m.[39mstatus)[33m.[39mtoBe([35m400[39m)[33m;[39m
+     [90m     |[39m                          [31m[1m^[22m[39m
+     [90m 315 |[39m       expect(res[33m.[39mbody)[33m.[39mtoEqual({ error[33m:[39m [32m'formato de c├│digo 
+inv├ílido'[39m })[33m;[39m
+     [90m 316 |[39m     })[33m;[39m
+     [90m 317 |[39m   })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:314:26)
+
+  ÔùÅ POST /habilitados ÔÇö validaci├│n de entrada (2.x) ÔÇ║ 2.5 campo aprobados ausente ÔÇ║ cuerpo {} ÔåÆ 400
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+    [0m [90m 324 |[39m         [33m.[39msend({})[33m;[39m
+     [90m 325 |[39m
+    [31m[1m>[22m[39m[90m 326 |[39m       expect(res[33m.[39mstatus)[33m.[39mtoBe([35m400[39m)[33m;[39m
+     [90m     |[39m                          [31m[1m^[22m[39m
+     [90m 327 |[39m       expect(res[33m.[39mbody)[33m.[39mtoEqual({ error[33m:[39m [32m"el campo 'aprobados' 
+es obligatorio"[39m })[33m;[39m
+     [90m 328 |[39m     })[33m;[39m
+     [90m 329 |[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:326:26)
+
+  ÔùÅ POST /habilitados ÔÇö validaci├│n de entrada (2.x) ÔÇ║ 2.5 campo aprobados ausente ÔÇ║ cuerpo con otro campo ÔåÆ 
+400
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+    [0m [90m 333 |[39m         [33m.[39msend({ cursos[33m:[39m [] })[33m;[39m
+     [90m 334 |[39m
+    [31m[1m>[22m[39m[90m 335 |[39m       expect(res[33m.[39mstatus)[33m.[39mtoBe([35m400[39m)[33m;[39m
+     [90m     |[39m                          [31m[1m^[22m[39m
+     [90m 336 |[39m       expect(res[33m.[39mbody)[33m.[39mtoEqual({ error[33m:[39m [32m"el campo 'aprobados' 
+es obligatorio"[39m })[33m;[39m
+     [90m 337 |[39m     })[33m;[39m
+     [90m 338 |[39m   })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:335:26)
+
+  ÔùÅ POST /habilitados ÔÇö validaci├│n de entrada (2.x) ÔÇ║ 2.6 arreglo vac├¡o ÔÇ║ [] ÔåÆ 200 con todos los cursos sin 
+prerrequisitos
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 345 |[39m         [33m.[39msend({ aprobados[33m:[39m [] })[33m;[39m
+     [90m 346 |[39m
+    [31m[1m>[22m[39m[90m 347 |[39m       expect(res[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                          [31m[1m^[22m[39m
+     [90m 348 |[39m       [36mconst[39m sinPrerrequisitos [33m=[39m repositorio
+     [90m 349 |[39m         [33m.[39mlistar()
+     [90m 350 |[39m         [33m.[39mfilter((c) [33m=>[39m [33m![39mc[33m.[39mprerequisites [33m||[39m 
+c[33m.[39mprerequisites[33m.[39mlength [33m===[39m [35m0[39m)[0m
+
+      at Object.toBe (tests/habilitados.test.js:347:26)
+
+  ÔùÅ POST /habilitados ÔÇö validaci├│n de entrada (2.x) ÔÇ║ 2.7 deduplicaci├│n tras el l├¡mite ÔÇ║ 100 elementos 
+exactos con duplicados ÔåÆ 200
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 366 |[39m         [33m.[39msend({ aprobados[33m:[39m arreglo })[33m;[39m
+     [90m 367 |[39m
+    [31m[1m>[22m[39m[90m 368 |[39m       expect(res[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                          [31m[1m^[22m[39m
+     [90m 369 |[39m       
+expect([33mArray[39m[33m.[39misArray(res[33m.[39mbody))[33m.[39mtoBe([36mtrue[39m)[33m;[39m
+     [90m 370 |[39m       
+expect(res[33m.[39mbody[33m.[39mlength)[33m.[39mtoBeGreaterThan([35m0[39m)[33m;[39m
+     [90m 371 |[39m     })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:368:26)
+
+  ÔùÅ POST /habilitados ÔÇö validaci├│n de entrada (2.x) ÔÇ║ 2.7 deduplicaci├│n tras el l├¡mite ÔÇ║ 100 duplicados de 
+un mismo c├│digo ÔåÆ 200 (equivalente a [ese c├│digo])
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 376 |[39m         [33m.[39msend({ aprobados[33m:[39m [36mnew[39m 
+[33mArray[39m([35m100[39m)[33m.[39mfill([32m'1INF25'[39m) })[33m;[39m
+     [90m 377 |[39m
+    [31m[1m>[22m[39m[90m 378 |[39m       expect(res[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                          [31m[1m^[22m[39m
+     [90m 379 |[39m
+     [90m 380 |[39m       [36mconst[39m resUnico [33m=[39m [36mawait[39m request(app)
+     [90m 381 |[39m         [33m.[39mpost([32m'/habilitados'[39m)[0m
+
+      at Object.toBe (tests/habilitados.test.js:378:26)
+
+  ÔùÅ POST /habilitados ÔÇö validaci├│n de entrada (2.x) ÔÇ║ 2.8 c├│digo inexistente ÔÇ║ 1INF99 ÔåÆ 400 con mensaje 
+exacto
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+    [0m [90m 393 |[39m         [33m.[39msend({ aprobados[33m:[39m [[32m'1INF25'[39m[33m,[39m 
+[32m'1INF99'[39m] })[33m;[39m
+     [90m 394 |[39m
+    [31m[1m>[22m[39m[90m 395 |[39m       expect(res[33m.[39mstatus)[33m.[39mtoBe([35m400[39m)[33m;[39m
+     [90m     |[39m                          [31m[1m^[22m[39m
+     [90m 396 |[39m       expect(res[33m.[39mbody)[33m.[39mtoEqual({ error[33m:[39m [32m'c├│digo de curso 
+inexistente: 1INF99'[39m })[33m;[39m
+     [90m 397 |[39m     })[33m;[39m
+     [90m 398 |[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:395:26)
+
+  ÔùÅ POST /habilitados ÔÇö validaci├│n de entrada (2.x) ÔÇ║ 2.8 c├│digo inexistente ÔÇ║ c├│digo inexistente entre 
+c├│digos v├ílidos ÔåÆ 400 con mensaje exacto
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+    [0m [90m 402 |[39m         [33m.[39msend({ aprobados[33m:[39m [[32m'1INF25'[39m[33m,[39m 
+[32m'1INF27'[39m[33m,[39m [32m'1XYZ00'[39m] })[33m;[39m
+     [90m 403 |[39m
+    [31m[1m>[22m[39m[90m 404 |[39m       expect(res[33m.[39mstatus)[33m.[39mtoBe([35m400[39m)[33m;[39m
+     [90m     |[39m                          [31m[1m^[22m[39m
+     [90m 405 |[39m       expect(res[33m.[39mbody)[33m.[39mtoEqual({ error[33m:[39m [32m'c├│digo de curso 
+inexistente: 1XYZ00'[39m })[33m;[39m
+     [90m 406 |[39m     })[33m;[39m
+     [90m 407 |[39m   })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:404:26)
+
+  ÔùÅ Propiedades (2.x) ÔÇ║ Property 2: idempotencia respecto de duplicados ÔÇ║ iteraci├│n 1: resultado id├®ntico con 
+el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 440 |[39m           [33m.[39msend({ aprobados[33m:[39m [[33m...[39m[36mnew[39m 
+[33mSet[39m(conDuplicados)] })[33m;[39m
+     [90m 441 |[39m
+    [31m[1m>[22m[39m[90m 442 |[39m         
+expect(resOriginal[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                                    [31m[1m^[22m[39m
+     [90m 443 |[39m         expect(resDedup[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m 444 |[39m         expect(resOriginal[33m.[39mbody)[33m.[39mtoEqual(resDedup[33m.[39mbody)[33m;[39m
+     [90m 445 |[39m       })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ÔùÅ Propiedades (2.x) ÔÇ║ Property 2: idempotencia respecto de duplicados ÔÇ║ iteraci├│n 2: resultado id├®ntico con 
+el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 440 |[39m           [33m.[39msend({ aprobados[33m:[39m [[33m...[39m[36mnew[39m 
+[33mSet[39m(conDuplicados)] })[33m;[39m
+     [90m 441 |[39m
+    [31m[1m>[22m[39m[90m 442 |[39m         
+expect(resOriginal[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                                    [31m[1m^[22m[39m
+     [90m 443 |[39m         expect(resDedup[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m 444 |[39m         expect(resOriginal[33m.[39mbody)[33m.[39mtoEqual(resDedup[33m.[39mbody)[33m;[39m
+     [90m 445 |[39m       })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ÔùÅ Propiedades (2.x) ÔÇ║ Property 2: idempotencia respecto de duplicados ÔÇ║ iteraci├│n 3: resultado id├®ntico con 
+el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 440 |[39m           [33m.[39msend({ aprobados[33m:[39m [[33m...[39m[36mnew[39m 
+[33mSet[39m(conDuplicados)] })[33m;[39m
+     [90m 441 |[39m
+    [31m[1m>[22m[39m[90m 442 |[39m         
+expect(resOriginal[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                                    [31m[1m^[22m[39m
+     [90m 443 |[39m         expect(resDedup[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m 444 |[39m         expect(resOriginal[33m.[39mbody)[33m.[39mtoEqual(resDedup[33m.[39mbody)[33m;[39m
+     [90m 445 |[39m       })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ÔùÅ Propiedades (2.x) ÔÇ║ Property 2: idempotencia respecto de duplicados ÔÇ║ iteraci├│n 4: resultado id├®ntico con 
+el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 440 |[39m           [33m.[39msend({ aprobados[33m:[39m [[33m...[39m[36mnew[39m 
+[33mSet[39m(conDuplicados)] })[33m;[39m
+     [90m 441 |[39m
+    [31m[1m>[22m[39m[90m 442 |[39m         
+expect(resOriginal[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                                    [31m[1m^[22m[39m
+     [90m 443 |[39m         expect(resDedup[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m 444 |[39m         expect(resOriginal[33m.[39mbody)[33m.[39mtoEqual(resDedup[33m.[39mbody)[33m;[39m
+     [90m 445 |[39m       })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ÔùÅ Propiedades (2.x) ÔÇ║ Property 2: idempotencia respecto de duplicados ÔÇ║ iteraci├│n 5: resultado id├®ntico con 
+el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 440 |[39m           [33m.[39msend({ aprobados[33m:[39m [[33m...[39m[36mnew[39m 
+[33mSet[39m(conDuplicados)] })[33m;[39m
+     [90m 441 |[39m
+    [31m[1m>[22m[39m[90m 442 |[39m         
+expect(resOriginal[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                                    [31m[1m^[22m[39m
+     [90m 443 |[39m         expect(resDedup[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m 444 |[39m         expect(resOriginal[33m.[39mbody)[33m.[39mtoEqual(resDedup[33m.[39mbody)[33m;[39m
+     [90m 445 |[39m       })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ÔùÅ Propiedades (2.x) ÔÇ║ Property 2: idempotencia respecto de duplicados ÔÇ║ iteraci├│n 6: resultado id├®ntico con 
+el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 440 |[39m           [33m.[39msend({ aprobados[33m:[39m [[33m...[39m[36mnew[39m 
+[33mSet[39m(conDuplicados)] })[33m;[39m
+     [90m 441 |[39m
+    [31m[1m>[22m[39m[90m 442 |[39m         
+expect(resOriginal[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                                    [31m[1m^[22m[39m
+     [90m 443 |[39m         expect(resDedup[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m 444 |[39m         expect(resOriginal[33m.[39mbody)[33m.[39mtoEqual(resDedup[33m.[39mbody)[33m;[39m
+     [90m 445 |[39m       })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ÔùÅ Propiedades (2.x) ÔÇ║ Property 2: idempotencia respecto de duplicados ÔÇ║ iteraci├│n 7: resultado id├®ntico con 
+el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 440 |[39m           [33m.[39msend({ aprobados[33m:[39m [[33m...[39m[36mnew[39m 
+[33mSet[39m(conDuplicados)] })[33m;[39m
+     [90m 441 |[39m
+    [31m[1m>[22m[39m[90m 442 |[39m         
+expect(resOriginal[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                                    [31m[1m^[22m[39m
+     [90m 443 |[39m         expect(resDedup[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m 444 |[39m         expect(resOriginal[33m.[39mbody)[33m.[39mtoEqual(resDedup[33m.[39mbody)[33m;[39m
+     [90m 445 |[39m       })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ÔùÅ Propiedades (2.x) ÔÇ║ Property 2: idempotencia respecto de duplicados ÔÇ║ iteraci├│n 8: resultado id├®ntico con 
+el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 440 |[39m           [33m.[39msend({ aprobados[33m:[39m [[33m...[39m[36mnew[39m 
+[33mSet[39m(conDuplicados)] })[33m;[39m
+     [90m 441 |[39m
+    [31m[1m>[22m[39m[90m 442 |[39m         
+expect(resOriginal[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                                    [31m[1m^[22m[39m
+     [90m 443 |[39m         expect(resDedup[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m 444 |[39m         expect(resOriginal[33m.[39mbody)[33m.[39mtoEqual(resDedup[33m.[39mbody)[33m;[39m
+     [90m 445 |[39m       })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ÔùÅ Propiedades (2.x) ÔÇ║ Property 2: idempotencia respecto de duplicados ÔÇ║ iteraci├│n 9: resultado id├®ntico con 
+el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 440 |[39m           [33m.[39msend({ aprobados[33m:[39m [[33m...[39m[36mnew[39m 
+[33mSet[39m(conDuplicados)] })[33m;[39m
+     [90m 441 |[39m
+    [31m[1m>[22m[39m[90m 442 |[39m         
+expect(resOriginal[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                                    [31m[1m^[22m[39m
+     [90m 443 |[39m         expect(resDedup[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m 444 |[39m         expect(resOriginal[33m.[39mbody)[33m.[39mtoEqual(resDedup[33m.[39mbody)[33m;[39m
+     [90m 445 |[39m       })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ÔùÅ Propiedades (2.x) ÔÇ║ Property 2: idempotencia respecto de duplicados ÔÇ║ iteraci├│n 10: resultado id├®ntico con 
+el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 440 |[39m           [33m.[39msend({ aprobados[33m:[39m [[33m...[39m[36mnew[39m 
+[33mSet[39m(conDuplicados)] })[33m;[39m
+     [90m 441 |[39m
+    [31m[1m>[22m[39m[90m 442 |[39m         
+expect(resOriginal[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                                    [31m[1m^[22m[39m
+     [90m 443 |[39m         expect(resDedup[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m 444 |[39m         expect(resOriginal[33m.[39mbody)[33m.[39mtoEqual(resDedup[33m.[39mbody)[33m;[39m
+     [90m 445 |[39m       })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ÔùÅ Propiedades (2.x) ÔÇ║ Property 2: idempotencia respecto de duplicados ÔÇ║ iteraci├│n 11: resultado id├®ntico con 
+el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 440 |[39m           [33m.[39msend({ aprobados[33m:[39m [[33m...[39m[36mnew[39m 
+[33mSet[39m(conDuplicados)] })[33m;[39m
+     [90m 441 |[39m
+    [31m[1m>[22m[39m[90m 442 |[39m         
+expect(resOriginal[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                                    [31m[1m^[22m[39m
+     [90m 443 |[39m         expect(resDedup[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m 444 |[39m         expect(resOriginal[33m.[39mbody)[33m.[39mtoEqual(resDedup[33m.[39mbody)[33m;[39m
+     [90m 445 |[39m       })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ÔùÅ Propiedades (2.x) ÔÇ║ Property 2: idempotencia respecto de duplicados ÔÇ║ iteraci├│n 12: resultado id├®ntico con 
+el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 440 |[39m           [33m.[39msend({ aprobados[33m:[39m [[33m...[39m[36mnew[39m 
+[33mSet[39m(conDuplicados)] })[33m;[39m
+     [90m 441 |[39m
+    [31m[1m>[22m[39m[90m 442 |[39m         
+expect(resOriginal[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                                    [31m[1m^[22m[39m
+     [90m 443 |[39m         expect(resDedup[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m 444 |[39m         expect(resOriginal[33m.[39mbody)[33m.[39mtoEqual(resDedup[33m.[39mbody)[33m;[39m
+     [90m 445 |[39m       })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ÔùÅ Propiedades (2.x) ÔÇ║ Property 2: idempotencia respecto de duplicados ÔÇ║ iteraci├│n 13: resultado id├®ntico con 
+el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 440 |[39m           [33m.[39msend({ aprobados[33m:[39m [[33m...[39m[36mnew[39m 
+[33mSet[39m(conDuplicados)] })[33m;[39m
+     [90m 441 |[39m
+    [31m[1m>[22m[39m[90m 442 |[39m         
+expect(resOriginal[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                                    [31m[1m^[22m[39m
+     [90m 443 |[39m         expect(resDedup[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m 444 |[39m         expect(resOriginal[33m.[39mbody)[33m.[39mtoEqual(resDedup[33m.[39mbody)[33m;[39m
+     [90m 445 |[39m       })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ÔùÅ Propiedades (2.x) ÔÇ║ Property 2: idempotencia respecto de duplicados ÔÇ║ iteraci├│n 14: resultado id├®ntico con 
+el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 440 |[39m           [33m.[39msend({ aprobados[33m:[39m [[33m...[39m[36mnew[39m 
+[33mSet[39m(conDuplicados)] })[33m;[39m
+     [90m 441 |[39m
+    [31m[1m>[22m[39m[90m 442 |[39m         
+expect(resOriginal[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                                    [31m[1m^[22m[39m
+     [90m 443 |[39m         expect(resDedup[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m 444 |[39m         expect(resOriginal[33m.[39mbody)[33m.[39mtoEqual(resDedup[33m.[39mbody)[33m;[39m
+     [90m 445 |[39m       })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ÔùÅ Propiedades (2.x) ÔÇ║ Property 2: idempotencia respecto de duplicados ÔÇ║ iteraci├│n 15: resultado id├®ntico con 
+el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 440 |[39m           [33m.[39msend({ aprobados[33m:[39m [[33m...[39m[36mnew[39m 
+[33mSet[39m(conDuplicados)] })[33m;[39m
+     [90m 441 |[39m
+    [31m[1m>[22m[39m[90m 442 |[39m         
+expect(resOriginal[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                                    [31m[1m^[22m[39m
+     [90m 443 |[39m         expect(resDedup[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m 444 |[39m         expect(resOriginal[33m.[39mbody)[33m.[39mtoEqual(resDedup[33m.[39mbody)[33m;[39m
+     [90m 445 |[39m       })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ÔùÅ Propiedades (2.x) ÔÇ║ Property 2: idempotencia respecto de duplicados ÔÇ║ iteraci├│n 16: resultado id├®ntico con 
+el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 440 |[39m           [33m.[39msend({ aprobados[33m:[39m [[33m...[39m[36mnew[39m 
+[33mSet[39m(conDuplicados)] })[33m;[39m
+     [90m 441 |[39m
+    [31m[1m>[22m[39m[90m 442 |[39m         
+expect(resOriginal[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                                    [31m[1m^[22m[39m
+     [90m 443 |[39m         expect(resDedup[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m 444 |[39m         expect(resOriginal[33m.[39mbody)[33m.[39mtoEqual(resDedup[33m.[39mbody)[33m;[39m
+     [90m 445 |[39m       })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ÔùÅ Propiedades (2.x) ÔÇ║ Property 2: idempotencia respecto de duplicados ÔÇ║ iteraci├│n 17: resultado id├®ntico con 
+el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 440 |[39m           [33m.[39msend({ aprobados[33m:[39m [[33m...[39m[36mnew[39m 
+[33mSet[39m(conDuplicados)] })[33m;[39m
+     [90m 441 |[39m
+    [31m[1m>[22m[39m[90m 442 |[39m         
+expect(resOriginal[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                                    [31m[1m^[22m[39m
+     [90m 443 |[39m         expect(resDedup[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m 444 |[39m         expect(resOriginal[33m.[39mbody)[33m.[39mtoEqual(resDedup[33m.[39mbody)[33m;[39m
+     [90m 445 |[39m       })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ÔùÅ Propiedades (2.x) ÔÇ║ Property 2: idempotencia respecto de duplicados ÔÇ║ iteraci├│n 18: resultado id├®ntico con 
+el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 440 |[39m           [33m.[39msend({ aprobados[33m:[39m [[33m...[39m[36mnew[39m 
+[33mSet[39m(conDuplicados)] })[33m;[39m
+     [90m 441 |[39m
+    [31m[1m>[22m[39m[90m 442 |[39m         
+expect(resOriginal[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                                    [31m[1m^[22m[39m
+     [90m 443 |[39m         expect(resDedup[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m 444 |[39m         expect(resOriginal[33m.[39mbody)[33m.[39mtoEqual(resDedup[33m.[39mbody)[33m;[39m
+     [90m 445 |[39m       })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ÔùÅ Propiedades (2.x) ÔÇ║ Property 2: idempotencia respecto de duplicados ÔÇ║ iteraci├│n 19: resultado id├®ntico con 
+el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 440 |[39m           [33m.[39msend({ aprobados[33m:[39m [[33m...[39m[36mnew[39m 
+[33mSet[39m(conDuplicados)] })[33m;[39m
+     [90m 441 |[39m
+    [31m[1m>[22m[39m[90m 442 |[39m         
+expect(resOriginal[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                                    [31m[1m^[22m[39m
+     [90m 443 |[39m         expect(resDedup[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m 444 |[39m         expect(resOriginal[33m.[39mbody)[33m.[39mtoEqual(resDedup[33m.[39mbody)[33m;[39m
+     [90m 445 |[39m       })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ÔùÅ Propiedades (2.x) ÔÇ║ Property 2: idempotencia respecto de duplicados ÔÇ║ iteraci├│n 20: resultado id├®ntico con 
+el arreglo deduplicado
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 440 |[39m           [33m.[39msend({ aprobados[33m:[39m [[33m...[39m[36mnew[39m 
+[33mSet[39m(conDuplicados)] })[33m;[39m
+     [90m 441 |[39m
+    [31m[1m>[22m[39m[90m 442 |[39m         
+expect(resOriginal[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                                    [31m[1m^[22m[39m
+     [90m 443 |[39m         expect(resDedup[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m 444 |[39m         expect(resOriginal[33m.[39mbody)[33m.[39mtoEqual(resDedup[33m.[39mbody)[33m;[39m
+     [90m 445 |[39m       })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:442:36)
+
+  ÔùÅ Propiedades (2.x) ÔÇ║ Property 4: rechazo de c├│digos inexistentes ÔÇ║ "1INF99" (alfanum├®rico, no existe) ÔåÆ 
+400 con mensaje exacto
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+    [0m [90m 460 |[39m           [33m.[39msend({ aprobados[33m:[39m [codigo] })[33m;[39m
+     [90m 461 |[39m
+    [31m[1m>[22m[39m[90m 462 |[39m         expect(res[33m.[39mstatus)[33m.[39mtoBe([35m400[39m)[33m;[39m
+     [90m     |[39m                            [31m[1m^[22m[39m
+     [90m 463 |[39m         expect(res[33m.[39mbody)[33m.[39mtoEqual({
+     [90m 464 |[39m           error[33m:[39m [32m`c├│digo de curso inexistente: ${codigo}`[39m[33m,[39m
+     [90m 465 |[39m         })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:462:28)
+
+  ÔùÅ Propiedades (2.x) ÔÇ║ Property 4: rechazo de c├│digos inexistentes ÔÇ║ "1XYZ00" (alfanum├®rico, no existe) ÔåÆ 
+400 con mensaje exacto
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+    [0m [90m 460 |[39m           [33m.[39msend({ aprobados[33m:[39m [codigo] })[33m;[39m
+     [90m 461 |[39m
+    [31m[1m>[22m[39m[90m 462 |[39m         expect(res[33m.[39mstatus)[33m.[39mtoBe([35m400[39m)[33m;[39m
+     [90m     |[39m                            [31m[1m^[22m[39m
+     [90m 463 |[39m         expect(res[33m.[39mbody)[33m.[39mtoEqual({
+     [90m 464 |[39m           error[33m:[39m [32m`c├│digo de curso inexistente: ${codigo}`[39m[33m,[39m
+     [90m 465 |[39m         })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:462:28)
+
+  ÔùÅ Propiedades (2.x) ÔÇ║ Property 4: rechazo de c├│digos inexistentes ÔÇ║ "ZZZ999" (alfanum├®rico, no existe) ÔåÆ 
+400 con mensaje exacto
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+    [0m [90m 460 |[39m           [33m.[39msend({ aprobados[33m:[39m [codigo] })[33m;[39m
+     [90m 461 |[39m
+    [31m[1m>[22m[39m[90m 462 |[39m         expect(res[33m.[39mstatus)[33m.[39mtoBe([35m400[39m)[33m;[39m
+     [90m     |[39m                            [31m[1m^[22m[39m
+     [90m 463 |[39m         expect(res[33m.[39mbody)[33m.[39mtoEqual({
+     [90m 464 |[39m           error[33m:[39m [32m`c├│digo de curso inexistente: ${codigo}`[39m[33m,[39m
+     [90m 465 |[39m         })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:462:28)
+
+  ÔùÅ Propiedades (2.x) ÔÇ║ Property 4: rechazo de c├│digos inexistentes ÔÇ║ "AAAA00" (alfanum├®rico, no existe) ÔåÆ 
+400 con mensaje exacto
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+    [0m [90m 460 |[39m           [33m.[39msend({ aprobados[33m:[39m [codigo] })[33m;[39m
+     [90m 461 |[39m
+    [31m[1m>[22m[39m[90m 462 |[39m         expect(res[33m.[39mstatus)[33m.[39mtoBe([35m400[39m)[33m;[39m
+     [90m     |[39m                            [31m[1m^[22m[39m
+     [90m 463 |[39m         expect(res[33m.[39mbody)[33m.[39mtoEqual({
+     [90m 464 |[39m           error[33m:[39m [32m`c├│digo de curso inexistente: ${codigo}`[39m[33m,[39m
+     [90m 465 |[39m         })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:462:28)
+
+  ÔùÅ Propiedades (2.x) ÔÇ║ Property 4: rechazo de c├│digos inexistentes ÔÇ║ "X1Y2Z3" (alfanum├®rico, no existe) ÔåÆ 
+400 con mensaje exacto
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+    [0m [90m 460 |[39m           [33m.[39msend({ aprobados[33m:[39m [codigo] })[33m;[39m
+     [90m 461 |[39m
+    [31m[1m>[22m[39m[90m 462 |[39m         expect(res[33m.[39mstatus)[33m.[39mtoBe([35m400[39m)[33m;[39m
+     [90m     |[39m                            [31m[1m^[22m[39m
+     [90m 463 |[39m         expect(res[33m.[39mbody)[33m.[39mtoEqual({
+     [90m 464 |[39m           error[33m:[39m [32m`c├│digo de curso inexistente: ${codigo}`[39m[33m,[39m
+     [90m 465 |[39m         })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:462:28)
+
+  ÔùÅ Propiedades (2.x) ÔÇ║ Property 4: rechazo de c├│digos inexistentes ÔÇ║ "9INF00" (alfanum├®rico, no existe) ÔåÆ 
+400 con mensaje exacto
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+    [0m [90m 460 |[39m           [33m.[39msend({ aprobados[33m:[39m [codigo] })[33m;[39m
+     [90m 461 |[39m
+    [31m[1m>[22m[39m[90m 462 |[39m         expect(res[33m.[39mstatus)[33m.[39mtoBe([35m400[39m)[33m;[39m
+     [90m     |[39m                            [31m[1m^[22m[39m
+     [90m 463 |[39m         expect(res[33m.[39mbody)[33m.[39mtoEqual({
+     [90m 464 |[39m           error[33m:[39m [32m`c├│digo de curso inexistente: ${codigo}`[39m[33m,[39m
+     [90m 465 |[39m         })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:462:28)
+
+  ÔùÅ Propiedades (2.x) ÔÇ║ Property 4: rechazo de c├│digos inexistentes ÔÇ║ "QWERTY9" (alfanum├®rico, no existe) ÔåÆ 
+400 con mensaje exacto
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+    [0m [90m 460 |[39m           [33m.[39msend({ aprobados[33m:[39m [codigo] })[33m;[39m
+     [90m 461 |[39m
+    [31m[1m>[22m[39m[90m 462 |[39m         expect(res[33m.[39mstatus)[33m.[39mtoBe([35m400[39m)[33m;[39m
+     [90m     |[39m                            [31m[1m^[22m[39m
+     [90m 463 |[39m         expect(res[33m.[39mbody)[33m.[39mtoEqual({
+     [90m 464 |[39m           error[33m:[39m [32m`c├│digo de curso inexistente: ${codigo}`[39m[33m,[39m
+     [90m 465 |[39m         })[33m;[39m[0m
+
+      at Object.toBe (tests/habilitados.test.js:462:28)
+
+Test Suites: 1 failed, 1 total
+Tests:       54 failed, 54 total
+Snapshots:   0 total
+Time:        0.861 s, estimated 1 s
+Ran all test suites matching /tests\\habilitados.test.js/i.

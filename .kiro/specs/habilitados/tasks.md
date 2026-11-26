@@ -15,7 +15,7 @@ Implementación de `POST /habilitados` siguiendo TDD (criterio E4 del diseño): 
     - 1.4: hash de `data/cursos.json` antes/después y espía sobre `repositorio.listar()`
     - **Property 1: Corrección del cálculo de habilitados** (oráculo independiente sobre el catálogo)
     - **Validates: Requirements 1.1, 1.2, 1.3, 1.4, 2.6**
-  - [ ] 1.2 Escribir tests de validación 2.x
+  - [x] 1.2 Escribir tests de validación 2.x
     - 2.1: `aprobados` como cadena → 400
     - 2.2: elemento no cadena (`[123]`) → 400
     - 2.3: 5000 códigos (aunque sean copias duplicadas) → 400 antes de deduplicar

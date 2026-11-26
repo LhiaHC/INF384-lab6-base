@@ -12,6 +12,18 @@
         "chatSessionId": "sess_91fbdde2-0f2a-4193-9441-31af5cfa6afa",
         "timestamp": 1795730874555
       }
+    ],
+    "1.2 Escribir tests de validación 2.x": [
+      {
+        "executionId": "1144823e-71f1-4afd-b27b-1e17ab328613",
+        "chatSessionId": "sess_095579b0-3d6f-41db-901f-fdbb8c89f626",
+        "timestamp": 1795730943373
+      },
+      {
+        "executionId": "1144823e-71f1-4afd-b27b-1e17ab328613",
+        "chatSessionId": "sess_095579b0-3d6f-41db-901f-fdbb8c89f626",
+        "timestamp": 1795731008199
+      }
     ]
   }
 }
