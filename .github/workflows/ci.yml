@@ -39,7 +39,8 @@ jobs:
 
       - name: Security Gate - SCA
         run: npm audit --audit-level=high
-        secretos:
+
+  secretos:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
