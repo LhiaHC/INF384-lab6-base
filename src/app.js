@@ -13,4 +13,11 @@ app.get('/health', (req, res) => {
 
 app.use('/cursos', require('./routes/cursos'));
 
+// Middleware de manejo de errores genérico (debe ir al final, después de todas las rutas)
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: 'internal server error' });
+});
+
 module.exports = app;
