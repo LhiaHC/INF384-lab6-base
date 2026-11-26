@@ -39,7 +39,7 @@ Implementación de `POST /habilitados` siguiendo TDD (criterio E4 del diseño): 
     - **Validates: Requirements 1.1, 2.1, 3.1**
 
 - [ ] 2. Implementar validaciones y cálculo de habilitados
-  - [ ] 2.1 Implementar la validación del payload
+  - [x] 2.1 Implementar la validación del payload
     - Crear `src/data/cursos-habilitados.js` (o `src/util/validar-aprobados.js`) con funciones puras sin acceso a `req`/`res`
     - Orden de validación: presencia del campo → tipo arreglo → límite de 100 elementos sobre el arreglo original (antes de deduplicar) → formato alfanumérico `^[A-Za-z0-9]+$` → existencia contra el Repositorio
     - Deduplicar con `new Set(aprobados)` solo después de que todas las validaciones pasan

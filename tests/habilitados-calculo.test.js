@@ -8,10 +8,12 @@ const repositorio = require('../src/data/repositorio');
 
 // El módulo todavía no existe; cuando se cree en la tarea siguiente pasará.
 let calcularHabilitados;
+let validarAprobados;
 try {
-  ({ calcularHabilitados } = require('../src/data/cursos-habilitados'));
+  ({ calcularHabilitados, validarAprobados } = require('../src/data/cursos-habilitados'));
 } catch (_) {
   calcularHabilitados = undefined;
+  validarAprobados = undefined;
 }
 
 /**
@@ -145,6 +147,174 @@ describe('calcularHabilitados (funciones puras)', () => {
         const original = catalogo.find((x) => x.id === c.id);
         expect(original.prerequisites || []).toHaveLength(0);
       }
+    });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Tests de validarAprobados (task 2.1)
+// Validates: Requirements 2.1, 2.2, 2.3, 2.4, 2.5, 2.7, 2.8
+// ---------------------------------------------------------------------------
+
+describe('validarAprobados (funciones puras de validación)', () => {
+  beforeEach(() => {
+    if (!validarAprobados) {
+      throw new Error(
+        'validarAprobados no exportada desde src/data/cursos-habilitados.js',
+      );
+    }
+  });
+
+  // Req 2.5 — campo ausente
+  describe('2.5 campo aprobados ausente', () => {
+    test('{} → error de campo obligatorio', () => {
+      const resultado = validarAprobados({});
+      expect(resultado.valido).toBe(false);
+      expect(resultado.error).toBe("el campo 'aprobados' es obligatorio");
+    });
+
+    test('null → error de campo obligatorio', () => {
+      const resultado = validarAprobados(null);
+      expect(resultado.valido).toBe(false);
+      expect(resultado.error).toBe("el campo 'aprobados' es obligatorio");
+    });
+
+    test('{otrocampo: []} → error de campo obligatorio', () => {
+      const resultado = validarAprobados({ otrocampo: [] });
+      expect(resultado.valido).toBe(false);
+      expect(resultado.error).toBe("el campo 'aprobados' es obligatorio");
+    });
+  });
+
+  // Req 2.1 — aprobados no es un arreglo
+  describe('2.1 aprobados debe ser arreglo', () => {
+    test('cadena de texto → error de tipo', () => {
+      const resultado = validarAprobados({ aprobados: '1INF25' });
+      expect(resultado.valido).toBe(false);
+      expect(resultado.error).toBe("'aprobados' debe ser un arreglo de cadenas");
+    });
+
+    test('número → error de tipo', () => {
+      const resultado = validarAprobados({ aprobados: 123 });
+      expect(resultado.valido).toBe(false);
+      expect(resultado.error).toBe("'aprobados' debe ser un arreglo de cadenas");
+    });
+
+    test('objeto → error de tipo', () => {
+      const resultado = validarAprobados({ aprobados: { id: '1INF25' } });
+      expect(resultado.valido).toBe(false);
+      expect(resultado.error).toBe("'aprobados' debe ser un arreglo de cadenas");
+    });
+  });
+
+  // Req 2.3 — límite de 100 elementos antes de deduplicar
+  describe('2.3 límite de 100 elementos', () => {
+    test('5000 copias duplicadas → error de límite excedido', () => {
+      const resultado = validarAprobados({ aprobados: new Array(5000).fill('1INF25') });
+      expect(resultado.valido).toBe(false);
+      expect(resultado.error).toBe("'aprobados' admite como máximo 100 elementos");
+    });
+
+    test('101 elementos → error de límite excedido', () => {
+      const resultado = validarAprobados({ aprobados: new Array(101).fill('1INF25') });
+      expect(resultado.valido).toBe(false);
+      expect(resultado.error).toBe("'aprobados' admite como máximo 100 elementos");
+    });
+
+    test('100 elementos → no error de límite', () => {
+      // 100 copias de un código válido; el límite no falla
+      // (puede fallar por otro motivo, pero NO por el límite)
+      const resultado = validarAprobados({ aprobados: new Array(100).fill('1INF25') });
+      expect(resultado.error).not.toBe("'aprobados' admite como máximo 100 elementos");
+    });
+  });
+
+  // Req 2.2 y 2.4 — tipo y formato de cada elemento
+  describe('2.2 y 2.4 tipo y formato de cada elemento', () => {
+    test('[123] → error de tipo (no cadena)', () => {
+      const resultado = validarAprobados({ aprobados: [123] });
+      expect(resultado.valido).toBe(false);
+      expect(resultado.error).toBe("'aprobados' debe ser un arreglo de cadenas");
+    });
+
+    test('[{id:"1INF25"}] → error de tipo', () => {
+      const resultado = validarAprobados({ aprobados: [{ id: '1INF25' }] });
+      expect(resultado.valido).toBe(false);
+      expect(resultado.error).toBe("'aprobados' debe ser un arreglo de cadenas");
+    });
+
+    test('"1INF30<script>" → error de formato', () => {
+      const resultado = validarAprobados({ aprobados: ['1INF30<script>'] });
+      expect(resultado.valido).toBe(false);
+      expect(resultado.error).toBe('formato de código inválido');
+      // No refleja el payload
+      expect(resultado.error).not.toContain('<script>');
+    });
+
+    test('"1INF 30" (con espacio) → error de formato', () => {
+      const resultado = validarAprobados({ aprobados: ['1INF 30'] });
+      expect(resultado.valido).toBe(false);
+      expect(resultado.error).toBe('formato de código inválido');
+    });
+
+    test('"INF@30" → error de formato', () => {
+      const resultado = validarAprobados({ aprobados: ['INF@30'] });
+      expect(resultado.valido).toBe(false);
+      expect(resultado.error).toBe('formato de código inválido');
+    });
+  });
+
+  // Req 2.8 — código inexistente
+  describe('2.8 código inexistente', () => {
+    test('"1INF99" → error con el código exacto', () => {
+      const resultado = validarAprobados({ aprobados: ['1INF99'] });
+      expect(resultado.valido).toBe(false);
+      expect(resultado.error).toBe('código de curso inexistente: 1INF99');
+    });
+
+    test('"1XYZ00" → error con el código exacto', () => {
+      const resultado = validarAprobados({ aprobados: ['1XYZ00'] });
+      expect(resultado.valido).toBe(false);
+      expect(resultado.error).toBe('código de curso inexistente: 1XYZ00');
+    });
+  });
+
+  // Req 2.6 — arreglo vacío es válido
+  describe('2.6 arreglo vacío es válido', () => {
+    test('[] → valido: true con aprobados = []', () => {
+      const resultado = validarAprobados({ aprobados: [] });
+      expect(resultado.valido).toBe(true);
+      expect(resultado.aprobados).toEqual([]);
+    });
+  });
+
+  // Req 2.7 — deduplicación solo después de las validaciones
+  describe('2.7 deduplicación tras el límite', () => {
+    test('100 elementos con duplicados (dentro del límite) → válido con Set', () => {
+      const { aprobados: ids } = require('../src/data/repositorio').listar()
+        .reduce((acc, c, i) => { if (i < 10) acc.aprobados.push(c.id); return acc; }, { aprobados: [] });
+      const arreglo = Array.from({ length: 100 }, (_, j) => ids[j % ids.length]);
+      const resultado = validarAprobados({ aprobados: arreglo });
+      expect(resultado.valido).toBe(true);
+      // La deduplicación produce menos o igual que 10 elementos únicos
+      expect(resultado.aprobados.length).toBeLessThanOrEqual(10);
+      // No hay duplicados en la salida
+      expect(resultado.aprobados.length).toBe(new Set(resultado.aprobados).size);
+    });
+
+    test('arreglo con códigos duplicados válidos → resultado deduplicado', () => {
+      const resultado = validarAprobados({ aprobados: ['1INF25', '1INF25', '1INF27'] });
+      expect(resultado.valido).toBe(true);
+      expect(resultado.aprobados).toEqual(['1INF25', '1INF27']);
+    });
+  });
+
+  // Caso exitoso nominal
+  describe('caso exitoso', () => {
+    test('["1INF25", "1INF27", "1INF49"] → valido: true', () => {
+      const resultado = validarAprobados({ aprobados: ['1INF25', '1INF27', '1INF49'] });
+      expect(resultado.valido).toBe(true);
+      expect(resultado.aprobados).toEqual(['1INF25', '1INF27', '1INF49']);
     });
   });
 });

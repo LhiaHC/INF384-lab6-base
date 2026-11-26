@@ -55,6 +55,18 @@
         "chatSessionId": "sess_20b5036a-ac44-4f6c-b55a-8fb1372e2fe5",
         "timestamp": 1795731280976
       }
+    ],
+    "2.1 Implementar la validación del payload": [
+      {
+        "executionId": "0807f52b-e18f-4bce-9759-7e225eca2c15",
+        "chatSessionId": "sess_c82357e3-3b86-410a-a804-9b51f3b5fc55",
+        "timestamp": 1795731328692
+      },
+      {
+        "executionId": "0807f52b-e18f-4bce-9759-7e225eca2c15",
+        "chatSessionId": "sess_c82357e3-3b86-410a-a804-9b51f3b5fc55",
+        "timestamp": 1795731419630
+      }
     ]
   }
 }
