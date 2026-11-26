@@ -21,4 +21,4 @@ jobs:
         run: npm ci
 
       - name: Ejecutar pruebas y verificar cobertura
-        run: npx jest --coverage --runInBand
+        run: npx jest --coverage --runInBand  
