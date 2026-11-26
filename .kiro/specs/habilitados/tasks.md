@@ -44,7 +44,7 @@ Implementación de `POST /habilitados` siguiendo TDD (criterio E4 del diseño): 
     - Orden de validación: presencia del campo → tipo arreglo → límite de 100 elementos sobre el arreglo original (antes de deduplicar) → formato alfanumérico `^[A-Za-z0-9]+$` → existencia contra el Repositorio
     - Deduplicar con `new Set(aprobados)` solo después de que todas las validaciones pasan
     - **Validates: Requirements 2.1, 2.2, 2.3, 2.4, 2.5, 2.7, 2.8**
-  - [ ] 2.2 Implementar `calcularHabilitados`
+  - [x] 2.2 Implementar `calcularHabilitados`
     - En el mismo módulo: filtrar cursos no aprobados cuyos prerrequisitos estén todos en el `Set` de aprobados (verificación O(1) por prerrequisito)
     - Ordenar por `id` ascendente y proyectar `id`, `name`, `credits`, `cycle`, `type` (sin `prerequisites`)
     - Leer el catálogo exclusivamente vía `src/data/repositorio.js`

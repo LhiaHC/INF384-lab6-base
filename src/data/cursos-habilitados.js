@@ -78,8 +78,43 @@ function validarAprobados(cuerpo) {
   return { valido: true, aprobados: [...new Set(aprobados)] };
 }
 
+/**
+ * Calcula los cursos habilitados dado un arreglo de códigos aprobados.
+ *
+ * Un curso está habilitado si:
+ *   - No está en `aprobados`
+ *   - Todos sus prerrequisitos están en `aprobados` (vacuamente verdadero si no tiene)
+ *
+ * Lee el catálogo exclusivamente vía repositorio.listar().
+ * Devuelve los cursos ordenados por id ascendente, proyectando solo
+ * id, name, credits, cycle, type (sin prerequisites).
+ *
+ * @param {string[]} aprobados - arreglo de códigos ya aprobados (deduplicado).
+ * @returns {{ id: string, name: string, credits: number, cycle: number, type: string }[]}
+ */
+function calcularHabilitados(aprobados) {
+  const aprobadosSet = new Set(aprobados);
+
+  return repositorio
+    .listar()
+    .filter(
+      (curso) =>
+        !aprobadosSet.has(curso.id) &&
+        (curso.prerequisites || []).every((pre) => aprobadosSet.has(pre)),
+    )
+    .sort((a, b) => a.id.localeCompare(b.id))
+    .map(({ id, name, credits, cycle, type }) => ({
+      id,
+      name,
+      credits,
+      cycle,
+      type,
+    }));
+}
+
 module.exports = {
   LIMITE_APROBADOS,
   FORMATO_CODIGO,
   validarAprobados,
+  calcularHabilitados,
 };
