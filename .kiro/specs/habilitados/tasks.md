@@ -27,7 +27,7 @@ Implementación de `POST /habilitados` siguiendo TDD (criterio E4 del diseño): 
     - **Property 2: Idempotencia respecto de duplicados** (resultado idéntico con el arreglo deduplicado)
     - **Property 4: Rechazo de códigos inexistentes con mensaje correcto**
     - **Validates: Requirements 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8**
-  - [ ] 1.3 Escribir tests de seguridad 3.x
+  - [x] 1.3 Escribir tests de seguridad 3.x
     - 3.1: mock del repositorio que lanza → 500 con `{"error": "internal server error"}`
     - 3.2: en todos los errores, el cuerpo no contiene `stack`, rutas absolutas ni detalles internos
     - 3.3: cubierto junto con 2.4 (código con `<script>` produce 400 sin revelar internos)

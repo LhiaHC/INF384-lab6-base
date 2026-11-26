@@ -467,3 +467,165 @@ describe('Propiedades (2.x)', () => {
     }
   });
 });
+
+// ---------------------------------------------------------------------------
+// Seguridad — criterios 3.x
+// ---------------------------------------------------------------------------
+
+describe('POST /habilitados — seguridad (3.x)', () => {
+  // Req 3.1 — error interno → 500 con mensaje genérico sin internos
+  describe('3.1 error interno del repositorio → 500', () => {
+    let espia;
+
+    afterEach(() => {
+      if (espia) {
+        espia.mockRestore();
+        espia = null;
+      }
+    });
+
+    test('cuando repositorio.listar() lanza → 500 con {"error": "internal server error"}', async () => {
+      espia = jest.spyOn(repositorio, 'listar').mockImplementation(() => {
+        throw new Error('fallo simulado de base de datos');
+      });
+
+      const res = await request(app)
+        .post('/habilitados')
+        .send({ aprobados: [] });
+
+      expect(res.status).toBe(500);
+      expect(res.body).toEqual({ error: 'internal server error' });
+    });
+
+    test('la respuesta 500 no contiene internos (stack, rutas, módulos)', async () => {
+      espia = jest.spyOn(repositorio, 'listar').mockImplementation(() => {
+        throw new Error('fallo simulado de base de datos');
+      });
+
+      const res = await request(app)
+        .post('/habilitados')
+        .send({ aprobados: [] });
+
+      const texto = JSON.stringify(res.body);
+      expect(texto).not.toContain('stack');
+      expect(texto).not.toMatch(/[A-Za-z]:\\\\/); // sin rutas absolutas estilo Windows
+      expect(texto).not.toMatch(/\//);             // sin rutas Unix
+      expect(texto).not.toContain('node_modules');
+      expect(texto).not.toContain('express');
+      expect(texto).not.toContain('Express');
+    });
+  });
+
+  // Req 3.2 — todas las respuestas de error no contienen internos
+  describe('3.2 ninguna respuesta de error revela internos', () => {
+    const casosDeError = [
+      { nombre: '400 campo ausente',         payload: {} },
+      { nombre: '400 tipo inválido (cadena)', payload: { aprobados: '1INF25' } },
+      { nombre: '400 elemento no cadena',     payload: { aprobados: [123] } },
+      { nombre: '400 límite excedido',        payload: { aprobados: new Array(101).fill('1INF25') } },
+      { nombre: '400 formato inválido',       payload: { aprobados: ['1INF30<script>'] } },
+      { nombre: '400 código inexistente',     payload: { aprobados: ['ZZZZZZ99'] } },
+    ];
+
+    for (const { nombre, payload } of casosDeError) {
+      test(`${nombre}: el cuerpo no contiene stack, rutas absolutas ni módulos internos`, async () => {
+        const res = await request(app)
+          .post('/habilitados')
+          .send(payload);
+
+        // Debe ser un error (4xx o 5xx)
+        expect(res.status).toBeGreaterThanOrEqual(400);
+
+        const texto = JSON.stringify(res.body);
+        expect(texto).not.toContain('stack');
+        expect(texto).not.toMatch(/[A-Za-z]:\\\\/); // sin rutas absolutas Windows
+        expect(texto).not.toContain('node_modules');
+        expect(texto).not.toContain('express');
+        expect(texto).not.toContain('Express');
+      });
+    }
+  });
+
+  // Req 3.3 — código con <script> produce 400 sin reflejar el payload ni revelar internos
+  // (cubre también junto con 2.4)
+  describe('3.3 código con <script> → 400 sin reflejo del payload ni internos', () => {
+    test('"1INF30<script>" → 400 sin el valor reflejado fuera del mensaje controlado', async () => {
+      const res = await request(app)
+        .post('/habilitados')
+        .send({ aprobados: ['1INF30<script>'] });
+
+      expect(res.status).toBe(400);
+      expect(res.body).toEqual({ error: 'formato de código inválido' });
+
+      // El cuerpo no refleja el payload malicioso
+      const texto = JSON.stringify(res.body);
+      expect(texto).not.toContain('<script>');
+
+      // El cuerpo no contiene internos
+      expect(texto).not.toContain('stack');
+      expect(texto).not.toMatch(/[A-Za-z]:\\\\/);
+      expect(texto).not.toContain('node_modules');
+      expect(texto).not.toContain('express');
+      expect(texto).not.toContain('Express');
+    });
+
+    test('"alert(1);drop table" → 400 sin reflejo del payload', async () => {
+      const res = await request(app)
+        .post('/habilitados')
+        .send({ aprobados: ['alert(1);drop table'] });
+
+      expect(res.status).toBe(400);
+      expect(res.body).toEqual({ error: 'formato de código inválido' });
+
+      const texto = JSON.stringify(res.body);
+      expect(texto).not.toContain('alert(1)');
+      expect(texto).not.toContain('drop table');
+    });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Property 3: Rechazo de códigos malformados sin fuga de información interna
+// Validates: Requirements 2.2, 2.4, 3.2, 3.3
+// ---------------------------------------------------------------------------
+
+describe('Property 3: Rechazo de códigos malformados sin fuga de información interna', () => {
+  // fast-check no está disponible; se usa un test paramétrico con ejemplos representativos
+  const codigosMalformados = [
+    '1INF30<script>',
+    '1INF30 OR 1=1--',
+    'abc<def>',
+    '123;456',
+    'code space',
+    'code\ttab',
+    '../etc/passwd',
+    'código#1',
+    'INF@30',
+    '1INF30!',
+    '1INF30\n',
+    '1INF30\r',
+    '<img src=x>',
+    'INF"30',
+    "INF'30",
+  ];
+
+  for (const codigo of codigosMalformados) {
+    test(`código malformado "${codigo.replace(/\n/g, '\\n').replace(/\r/g, '\\r')}" → 400 sin internos`, async () => {
+      const res = await request(app)
+        .post('/habilitados')
+        .send({ aprobados: [codigo] });
+
+      expect(res.status).toBe(400);
+      expect(res.body).toEqual({ error: 'formato de código inválido' });
+
+      const texto = JSON.stringify(res.body);
+
+      // El cuerpo no contiene internos
+      expect(texto).not.toContain('stack');
+      expect(texto).not.toMatch(/[A-Za-z]:\\\\/); // sin rutas absolutas Windows
+      expect(texto).not.toContain('node_modules');
+      expect(texto).not.toContain('express');
+      expect(texto).not.toContain('Express');
+    });
+  }
+});
